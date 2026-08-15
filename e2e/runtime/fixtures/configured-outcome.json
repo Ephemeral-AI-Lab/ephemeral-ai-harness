@@ -1,0 +1,18 @@
+{
+  "name": "runtime-configured-fixture",
+  "systemPromptMarkdown": "configured-system.md",
+  "tool": {
+    "name": "lookup_configured_runtime_fixture",
+    "response": {
+      "codeword": "configured-runtime-fixture",
+      "source": "json-fixture"
+    }
+  },
+  "userSteps": [
+    "1. Call lookup_configured_runtime_fixture with {}.",
+    "2. After the tool result, call submit_runtime_outcome with {\"status\":\"completed\",\"codeword\":\"configured-runtime-fixture\"}.",
+    "Do not write final prose."
+  ],
+  "expectedCodeword": "configured-runtime-fixture",
+  "maxTurns": 5
+}

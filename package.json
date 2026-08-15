@@ -1,30 +1,50 @@
 {
-  "name": "@ephemeralai/agent-core",
-  "version": "0.1.0",
-  "description": "Provider-neutral runtime primitives for AI agent runs.",
+  "name": "@ephai/agent-core",
+  "version": "0.0.0",
+  "private": true,
   "type": "module",
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
+  "packageManager": "pnpm@10.23.0",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./nodes": {
+      "types": "./src/nodes/index.ts",
+      "default": "./src/nodes/index.ts"
+    },
+    "./agentic-workflows": {
+      "types": "./src/agentic-workflows/index.ts",
+      "default": "./src/agentic-workflows/index.ts"
+    },
+    "./agents": {
+      "types": "./src/agents/index.ts",
+      "default": "./src/agents/index.ts"
+    },
+    "./testkit": {
+      "types": "./testkit/index.ts",
+      "default": "./testkit/index.ts"
     }
   },
   "scripts": {
-    "build": "pnpm clean && tsc -p tsconfig.json",
-    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "pnpm build && node --test test/agent.test.mjs"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run test"
   },
-  "engines": {
-    "node": ">=22.13"
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.104.1",
+    "openai": "6.42.0",
+    "zod": "^4.4.3"
   },
-  "packageManager": "pnpm@10.32.1",
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.9.2",
+    "eslint": "^10.4.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0",
+    "vitest": "^4.1.8"
   }
 }

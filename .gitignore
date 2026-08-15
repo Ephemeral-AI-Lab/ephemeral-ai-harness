@@ -1,5 +1,38 @@
+# Dependencies
 node_modules/
-dist/
-coverage/
+.pnpm-store/
+
+# Secrets / local env
+.env
+.env.*
+
+# OS metadata
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs and runtime leftovers
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.pid
+*.sock
+
+# Build/test output
+dist/
+build/
+coverage/
+.nyc_output/
+.turbo/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.eslintcache
+.vite/
+
+# Local/generated code inventory artifacts
+/code_map_index.html
+/code_map/
