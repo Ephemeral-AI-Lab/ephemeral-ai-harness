@@ -184,39 +184,18 @@ closed (deny); a throwing `turnBoundary` is recorded and skipped.
 `llmClients` maps a name (`LlmRef`) to a profile: `{ model, reasoningEffort?,
 maxTokens? }` plus either a `connection` (built for you) or an injected `client`.
 
-| `connection.provider` | wire | credential |
+| `connection.provider` | provider | credential |
 |---|---|---|
 | `anthropic_api` | Anthropic Messages | `api_key` |
 | `openai_api` | OpenAI Responses | `api_key` |
 | `claude_coding_plan` | Anthropic Messages (+ Claude Code system prefix) | `access_token` |
 | `codex_coding_plan` | OpenAI Responses (codex dialect) | `access_token` |
-| `pi_ai` | pi-ai provider/model catalog | `api_key` + `route` |
 
-`base_url` defaults per provider and can be overridden (gateways, proxies,
-self-hosted). Credentials accept a raw string or a `SecretString`.
-
-The `pi_ai` connection keeps the harness `LlmClient` contract while using
-`@earendil-works/pi-ai` for provider/model breadth. Its `route` selects a
-built-in provider (`openai`, `anthropic`, `deepseek`, `google`, `mistral`,
-`groq`, `cerebras`, `xai`, or `openrouter`), and `model` remains the model id
-from the surrounding `llmClients` profile:
-
-```ts
-llmClients: {
-  fast: {
-    model: "deepseek-chat",
-    connection: {
-      provider: "pi_ai",
-      route: "deepseek",
-      api_key: process.env.DEEPSEEK_API_KEY!,
-    },
-  },
-}
-```
-
-The existing direct OpenAI/Anthropic and coding-plan connections remain
-available for compatibility-sensitive authentication and wire behavior.
-This package requires Node.js `>=22.19.0`, matching the pinned pi-ai runtime.
+`base_url` defaults per provider and can be overridden for compatible
+gateways, proxies, or self-hosted endpoints. Credentials accept a raw string
+or a `SecretString`. Provider modules own request encoding, authentication,
+native stream decoding, and provider-specific error mapping while the shared
+client preserves the normalized `LlmClient` contract.
 
 ## Package layout
 
@@ -224,7 +203,7 @@ This package requires Node.js `>=22.19.0`, matching the pinned pi-ai runtime.
 |---|---|
 | `src/contracts` | Typed IDs, the JSON value model, message/content-block schemas, the settled tool-call DTO. |
 | `src/agent-runtime.ts`, `src/agent.ts`, `src/agent-run.ts` | Generic agent contracts, `createAgentRuntime`, direct agent run handles, and the SDK-owned agent runtime infrastructure. |
-| `src/llm-client` | Stable `LlmClient` contracts, retry/error/streaming policy, legacy wires, and the pi-ai provider adapter/catalog. |
+| `src/llm-client` | Stable `LlmClient` contracts, shared retry/error/streaming policy, and direct Anthropic/OpenAI provider implementations. |
 | `src/engine` | The run loop: `RunHandle` + events, `Conversation`, the provider turn, the tool-executor port, and the agent JSONL records writer. |
 | `src/tool` | `defineTool`, the batch executor + pipeline, the `HookEngine`, and the terminal-outcome factory. |
 | `src/background` | The run-scoped background-task supervisor. |
