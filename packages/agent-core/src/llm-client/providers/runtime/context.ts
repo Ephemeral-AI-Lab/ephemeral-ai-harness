@@ -1,5 +1,6 @@
 import type {
   AssistantMessage,
+  Api,
   Context,
   Message as PiMessage,
   Model as PiModel,
@@ -14,6 +15,7 @@ import type {
   ToolSpec,
 } from "../../../contracts/index.js";
 import type { LlmRequest } from "../../types.js";
+import type { ToolChoice } from "../../types.js";
 
 const EMPTY_USAGE = {
   input: 0,
@@ -25,7 +27,7 @@ const EMPTY_USAGE = {
 };
 
 /** Convert our neutral request into pi-ai's private context representation. */
-export function toPiContext(request: LlmRequest, model: PiModel): Context {
+export function toPiContext(request: LlmRequest, model: PiModel<Api>): Context {
   const toolNames = new Map<string, string>();
   const messages: PiMessage[] = [];
 
@@ -46,6 +48,26 @@ export function toPiContext(request: LlmRequest, model: PiModel): Context {
       ? {}
       : { tools: request.tools.map(toPiTool) }),
   };
+}
+
+/** Map our neutral tool-choice control to pi-ai's provider-facing option. */
+export function toPiToolChoice(
+  choice: ToolChoice | undefined,
+  api: Api,
+): unknown {
+  if (choice === undefined || choice === "auto") return choice;
+  if (choice === "any") {
+    return api === "anthropic-messages" || api.startsWith("google-")
+      ? "any"
+      : "required";
+  }
+  if (api === "anthropic-messages") {
+    return { type: "tool", name: choice.tool };
+  }
+  if (api === "openai-completions") {
+    return { type: "function", function: { name: choice.tool } };
+  }
+  return { type: "function", name: choice.tool };
 }
 
 function appendUserMessage(
@@ -78,8 +100,8 @@ function appendUserMessage(
 }
 
 function toPiAssistantMessage(
-  message: Extract<Message, { role: "assistant" }>,
-  model: PiModel,
+  message: Message,
+  model: PiModel<Api>,
   toolNames: Map<string, string>,
 ): AssistantMessage {
   const content: AssistantMessage["content"] = [];
@@ -134,6 +156,6 @@ function toPiTool(spec: ToolSpec): PiTool {
     name: spec.name,
     description: spec.description,
     // Our schema is already JSON Schema; pi-ai's ToolBox type is structural.
-    parameters: spec.input_schema as PiTool["parameters"],
+    parameters: spec.input_schema,
   };
 }

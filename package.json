@@ -10,6 +10,7 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
-    "test:e2e": "pnpm --filter @ephai/agent-core run test:e2e"
+    "test:e2e": "pnpm --filter @ephai/agent-core run test:e2e",
+    "test:live": "pnpm --filter @ephai/agent-core run test:live"
   }
 }

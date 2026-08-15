@@ -3,7 +3,7 @@ import type {
   AssistantMessageEvent,
 } from "@earendil-works/pi-ai";
 
-import type { Message } from "../../../contracts/index.js";
+import type { Message, ToolUseId } from "../../../contracts/index.js";
 import { ProviderError } from "../../errors.js";
 import type { LlmStreamEvent, StopReason } from "../../events.js";
 import type { UsageSnapshot } from "../../types.js";
@@ -31,7 +31,7 @@ export class PiStreamDecoder implements StreamDecoder<unknown> {
         return [
           {
             type: "tool_use_delta",
-            tool_use_id: raw.toolCall.id,
+            tool_use_id: raw.toolCall.id as ToolUseId,
             name: raw.toolCall.name,
             input: raw.toolCall.arguments,
           },
@@ -66,26 +66,26 @@ function toCompletionEvent(
 }
 
 function toMessage(message: AssistantMessage): Message {
-  return {
-    role: "assistant",
-    content: message.content.flatMap((block) => {
-      switch (block.type) {
-        case "text":
-          return [{ type: "text", text: block.text }];
-        case "thinking":
-          return [{ type: "reasoning", text: block.thinking }];
-        case "toolCall":
-          return [
-            {
-              type: "tool_use",
-              tool_use_id: block.id,
-              name: block.name,
-              input: block.arguments,
-            },
-          ];
-      }
-    }),
-  };
+  const content: Message["content"] = [];
+  for (const block of message.content) {
+    switch (block.type) {
+      case "text":
+        content.push({ type: "text", text: block.text });
+        break;
+      case "thinking":
+        content.push({ type: "reasoning", text: block.thinking });
+        break;
+      case "toolCall":
+        content.push({
+          type: "tool_use",
+          tool_use_id: block.id as ToolUseId,
+          name: block.name,
+          input: block.arguments,
+        });
+        break;
+    }
+  }
+  return { role: "assistant", content };
 }
 
 function toUsage(message: AssistantMessage): UsageSnapshot {

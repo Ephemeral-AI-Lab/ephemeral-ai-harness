@@ -21,7 +21,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "test:e2e": "node scripts/run-live-vitest.mjs",
+    "test:live": "node scripts/run-live-vitest.mjs e2e/llm-client/pi-ai-codex-song.e2e.ts",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run test"
   },
   "dependencies": {

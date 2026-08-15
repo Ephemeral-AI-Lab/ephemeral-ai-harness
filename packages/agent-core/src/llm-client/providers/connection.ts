@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import type { KnownProvider as PiKnownProvider } from "@earendil-works/pi-ai";
 import { getBuiltinProviders } from "@earendil-works/pi-ai/providers/all";
 
 import { SecretString } from "../secret.js";
@@ -48,12 +49,58 @@ const directProviderConnectionSchema = z.discriminatedUnion("provider", [
   }),
 ]);
 
-export const ProviderConnectionSchema = z.union([
+const rawProviderConnectionSchema = z.union([
   directProviderConnectionSchema,
   catalogProviderConnectionSchema,
 ]);
 
-export type ProviderConnection = z.input<typeof ProviderConnectionSchema>;
-export type CatalogProviderConnection = z.input<
-  typeof catalogProviderConnectionSchema
+type SecretInput = string | SecretString;
+
+export type ProviderConnection =
+  | { provider: "anthropic_api"; base_url?: string; api_key: SecretInput }
+  | { provider: "openai_api"; base_url?: string; api_key: SecretInput }
+  | {
+      provider: "claude_coding_plan";
+      base_url?: string;
+      access_token: SecretInput;
+    }
+  | {
+      provider: "codex_coding_plan";
+      base_url?: string;
+      access_token: SecretInput;
+    }
+  | CatalogProviderConnection;
+
+export interface CatalogProviderConnection {
+  provider: PiKnownProvider;
+  base_url?: string;
+  api_key?: SecretInput;
+  access_token?: SecretInput;
+}
+
+export type ParsedProviderConnection =
+  | { provider: "anthropic_api"; base_url: string; api_key: SecretString }
+  | { provider: "openai_api"; base_url: string; api_key: SecretString }
+  | {
+      provider: "claude_coding_plan";
+      base_url: string;
+      access_token: SecretString;
+    }
+  | {
+      provider: "codex_coding_plan";
+      base_url: string;
+      access_token: SecretString;
+    }
+  | ParsedCatalogProviderConnection;
+
+export interface ParsedCatalogProviderConnection {
+  provider: PiKnownProvider;
+  base_url?: string;
+  api_key?: SecretString;
+  access_token?: SecretString;
+}
+
+export const ProviderConnectionSchema = rawProviderConnectionSchema as unknown as z.ZodType<
+  ParsedProviderConnection,
+  ProviderConnection
 >;
