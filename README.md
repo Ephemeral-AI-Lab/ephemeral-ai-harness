@@ -4,15 +4,13 @@
 
 ```text
 @ephai/agent-core       generic runtime kernel
-          ↑
-@ephai/agent-harness    agent profiles, subagents, tools, and run stores
-          ↑
+@ephai/agent-harness    concrete subagent and background tools
 ```
 
 Packages live under [`packages/`](./packages/). The core package owns the
 provider-neutral agent loop, contracts, tools, notifications, background tasks,
-and LLM adapters. The harness package adds agent profiles, subagent tools,
-durable run stores, and the injected composition API.
+and LLM adapters. The harness package provides optional concrete tools for
+subagent delegation and background-task control.
 
 Run all package checks with:
 

@@ -1,4 +1,7 @@
+import { randomUUID } from "node:crypto";
+
 import {
+  type Agent,
   defineTool,
   type AgentOutcome,
   type BackgroundTaskOutcome,
@@ -6,17 +9,16 @@ import {
 } from "@ephai/agent-core";
 import { z } from "zod";
 
-import type { AgentFactory } from "../../agents/agent-factory.js";
-import type { AgentRunId } from "../../runs/index.js";
+export type SubagentResolver = (agentName: string) => Agent;
 
 /**
- * Start another configured agent by name, gated on the caller profile's
- * `subagents` allow-list (the input enum). Foreground (`wait`) returns the
- * outcome; background registers exactly one task whose `onCompletion` is the
- * only completion publisher.
+ * Start another agent by name. The host supplies the name allow-list and the
+ * resolver, so this tool does not own profiles, agent factories, or run IDs.
+ * Foreground (`wait`) returns the outcome; background registers exactly one
+ * task whose `onCompletion` is the only completion publisher.
  */
 export function runSubagent(
-  agents: AgentFactory,
+  resolveAgent: SubagentResolver,
   subagents: readonly [string, ...string[]],
 ): ToolDefinition {
   return defineTool({
@@ -28,8 +30,8 @@ export function runSubagent(
       wait: z.boolean().default(true),
     }),
     execute: async (input, ctx) => {
-      const child = agents.create(input.agent_name);
-      const run = await child.start({
+      const child = resolveAgent(input.agent_name);
+      const run = child.start({
         messages: [{ role: "user", content: [{ type: "text", text: input.prompt }] }],
       });
       ctx.signal.addEventListener("abort", () => {
@@ -40,20 +42,21 @@ export function runSubagent(
         return { output: renderAgentOutcome(await run.outcome()) };
       }
 
+      const taskId = randomUUID();
       ctx.backgroundTaskSupervisor.register({
-        tag: { type: "subagent", id: run.agentRunId },
+        tag: { type: "subagent", id: taskId },
         title: `${input.agent_name}: ${input.prompt.slice(0, 80)}`,
         cancel: () => {
           run.interrupt();
         },
         done: run.outcome().then(toBackgroundTaskOutcome),
         onCompletion: (out, { notifier }) => {
-          notifier.publish(renderSubagentCompletion(input.agent_name, run.agentRunId, out), {
-            key: `subagent:${run.agentRunId}`,
+          notifier.publish(renderSubagentCompletion(input.agent_name, taskId, out), {
+            key: `subagent:${taskId}`,
           });
         },
       });
-      return { output: `subagent started: ${run.agentRunId}` };
+      return { output: `subagent started: ${taskId}` };
     },
   });
 }
@@ -72,8 +75,8 @@ function renderAgentOutcome(outcome: AgentOutcome): string {
 
 function renderSubagentCompletion(
   agentName: string,
-  runId: AgentRunId,
+  taskId: string,
   out: BackgroundTaskOutcome,
 ): string {
-  return `subagent ${agentName} (${runId}) ${out.status}: ${out.outcome}`;
+  return `subagent ${agentName} (${taskId}) ${out.status}: ${out.outcome}`;
 }

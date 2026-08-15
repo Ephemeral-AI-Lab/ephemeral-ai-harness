@@ -9,21 +9,9 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./agents": {
-      "types": "./src/agents/index.ts",
-      "default": "./src/agents/index.ts"
-    },
-    "./runs": {
-      "types": "./src/runs/index.ts",
-      "default": "./src/runs/index.ts"
-    },
     "./tools": {
       "types": "./src/tools/index.ts",
       "default": "./src/tools/index.ts"
-    },
-    "./scripts": {
-      "types": "./src/scripts/index.ts",
-      "default": "./src/scripts/index.ts"
     }
   },
   "scripts": {
@@ -35,7 +23,6 @@
   "files": [
     "dist/**",
     "src/**",
-    ".ephai/**",
     "package.json"
   ],
   "dependencies": {
@@ -46,7 +33,6 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.2",
     "eslint": "^10.4.1",
-    "tsx": "^4.22.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.0",
     "vitest": "^4.1.8"

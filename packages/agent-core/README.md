@@ -2,7 +2,7 @@
 
 A **mechanism-only** agent runtime for TypeScript. It runs the agent loop —
 provider turns, a tool-call batch executor, hooks, background tasks,
-notifications, steering/interruption, and a JSONL run record — and **ships zero
+notifications, steering/interruption, and normalized live events — and **ships zero
 tools and zero policy**. Every tool, every prompt, and every gate is authored by
 the host. The agent-harness product is one such host; this package owns only the
 runtime spine beneath it.
@@ -25,7 +25,7 @@ runtime spine beneath it.
 - **Narrow public surface.** Everything you can construct or hold is re-exported
   from `src/index.ts` — the construction values (`createAgentRuntime`, `defineTool`,
   `createAgentOutcomeFn`, and the `agentOutcomeToolName` read-back) plus a set of
-  types. No schemas, no subprocess execution, no filesystem beyond `recordsDir`.
+  types. No schemas, no subprocess execution, and no filesystem access.
 
 ## Run anatomy
 
@@ -40,7 +40,6 @@ createAgentRuntime(config)                         src/agent-runtime.ts
               │    ├─ background tasks ───────▶  src/background/
               │    └─ notifications  ─────────▶  src/notification/
               ├─ steer() / interrupt() at boundaries
-              └─ records ────────────────────▶  src/engine/records.ts
 ```
 
 ## Quick start
@@ -70,7 +69,7 @@ const submit = createAgentOutcomeFn({
   onSubmit: async (payload) => ({ accept: payload }),
 });
 
-// 3 — bind process config: providers, global hooks, records dir
+// 3 — bind process config: providers and global hooks
 const runtime = createAgentRuntime({
   llmClients: {
     main: {
@@ -78,7 +77,6 @@ const runtime = createAgentRuntime({
       connection: { provider: "anthropic_api", api_key: process.env.ANTHROPIC_API_KEY! },
     },
   },
-  recordsDir: "./.runs",
 });
 
 // 4 — a reusable agent template (concurrent runs allowed)
@@ -144,13 +142,11 @@ const out = await agent.start({ messages: [userMessage("hi")] }).outcome();
 | **Hooks** | `HookEntry[]` (global + per-agent) | `preToolUse` · `postToolUse` · `turnBoundary`. |
 | **Background tasks** | `ctx.backgroundTaskSupervisor` | `register` / `list` / `cancel`; each task declares `onCompletion` or `silent: true`. |
 | **Notifications** | `ctx.notifier.publish(msg, { key? })` | Drains into the conversation at the next turn boundary; same `key` coalesces. |
-| **Records** | `recordsDir` | Writes `<recordsDir>/<runId>/events.jsonl` + `messages.jsonl`. |
 
 ### The run handle
 
 ```ts
 interface AgentRunHandle<T = string> {
-  runId: AgentRunId;
   steer(message: UserMessage): boolean;   // queue for next boundary; false once finishing
   interrupt(): void;                      // idempotent stop → outcome status "cancelled"
   outcome(): Promise<AgentOutcome<T>>;    // always resolves, memoized, never rejects
@@ -172,7 +168,7 @@ type AgentOutcome<T> = { usage; turns } & (
 |---|---|---|
 | `preToolUse` | `(call) => HookDecision` | `deny` ⇒ the call never executes; the reason returns to the model as a recoverable tool error. |
 | `postToolUse` | `(call, result) => HookDecision` | `deny` ⇒ replaces the executed result with a recoverable error. |
-| `turnBoundary` | `(turnFacts, { notifier, runId }) => void` | Observe-only; may publish notifications. The seam where a host compiles its notification rules. |
+| `turnBoundary` | `(turnFacts, { notifier }) => void` | Observe-only; may publish notifications. The seam where a host compiles its notification rules. |
 
 `HookDecision` is `{ decision: "passthrough" }` or `{ decision: "deny"; reason }`.
 Pre/post hooks see per-call facts only (no conversation), so terminal payload
@@ -204,11 +200,10 @@ client preserves the normalized `LlmClient` contract.
 | `src/contracts` | Typed IDs, the JSON value model, message/content-block schemas, the settled tool-call DTO. |
 | `src/agent-runtime.ts`, `src/agent.ts`, `src/agent-run.ts` | Generic agent contracts, `createAgentRuntime`, direct agent run handles, and the SDK-owned agent runtime infrastructure. |
 | `src/llm-client` | Stable `LlmClient` contracts, shared retry/error/streaming policy, and direct Anthropic/OpenAI provider implementations. |
-| `src/engine` | The run loop: `RunHandle` + events, `Conversation`, the provider turn, the tool-executor port, and the agent JSONL records writer. |
+| `src/engine` | The run loop: `RunHandle` + events, `Conversation`, the provider turn, and the tool-executor port. |
 | `src/tool` | `defineTool`, the batch executor + pipeline, the `HookEngine`, and the terminal-outcome factory. |
 | `src/background` | The run-scoped background-task supervisor. |
 | `src/notification` | The inbox the loop drains and the host-facing `Notifier`. |
-| `src/runs` | Shared run handles, event streams, interruption, and record-scope primitives. |
 
 ## Scripts
 
