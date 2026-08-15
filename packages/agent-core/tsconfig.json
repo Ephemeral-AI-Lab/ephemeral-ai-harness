@@ -8,10 +8,6 @@
     "moduleResolution": "NodeNext",
     "noEmit": true,
     "resolveJsonModule": true,
-    // pi-ai's provider SDK bundle contains optional peer declarations that
-    // are not resolvable under pnpm's isolated layout. Application sources
-    // remain fully typechecked while vendor declarations are trusted.
-    "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
     "types": ["node"]

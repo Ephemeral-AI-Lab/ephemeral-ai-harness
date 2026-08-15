@@ -2,7 +2,7 @@ export type { LlmClient, LlmStreamOptions } from "./client.js";
 export { ProviderError } from "./errors.js";
 export type { LlmStreamEvent, StopReason } from "./events.js";
 export { createLlmClient } from "./factory.js";
-export type { ProviderConnection } from "./profiles.js";
+export type { ProviderConnection } from "./providers/connection.js";
 export { SecretString } from "./secret.js";
 export {
   buildLlmRequest,

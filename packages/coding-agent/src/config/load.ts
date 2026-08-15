@@ -1,7 +1,7 @@
 import { dirname, join, resolve } from "node:path";
 
 import type { HookEntry, LlmClientConfig } from "@ephai/agent-core";
-import type { AgentHookFactories, AgentProfileRegistry } from "@ephai/agent-engine/agents";
+import type { AgentProfileRegistry } from "@ephai/agent-engine/agents";
 
 import { loadAgentProfiles } from "./agent-profiles.js";
 import { loadHookConfig } from "./hook-config.js";
@@ -17,7 +17,6 @@ export interface CodingAgentConfig {
   configBaseDir: string;
   llmClients: LlmClientConfig;
   hooks: HookEntry[];
-  agentHooks: AgentHookFactories;
   recordsDir: string;
   profiles: AgentProfileRegistry;
 }
@@ -30,7 +29,6 @@ export function loadCodingAgentConfig(configRoot: string): CodingAgentConfig {
     configBaseDir,
     llmClients: loadLlmClients(join(root, "llm-clients", "llm-clients.json")),
     hooks: hooks.sdkHooks,
-    agentHooks: hooks.agentHooks,
     recordsDir: join(root, "runs"),
     profiles: loadAgentProfiles({ agentsDir: join(root, "agents") }),
   };

@@ -18,9 +18,9 @@ import type {
 import {
   parseToolArgs,
   type StreamDecoder,
-  type WireFactory,
-  type WireOptions,
-} from "./wire.js";
+  type ProviderFactory,
+  type ProviderOptions,
+} from "./provider.js";
 
 /** §5 effort clamp: the responses api has no `max`, `minimal` is native. */
 const OPENAI_EFFORT: Record<
@@ -101,7 +101,7 @@ function encodeTool(spec: ToolSpec): OpenAI.Responses.Tool {
 
 function encodeToolChoice(
   choice: ToolChoice,
-  dialect: WireOptions["dialect"],
+  dialect: ProviderOptions["dialect"],
 ): OpenAI.Responses.ResponseCreateParams["tool_choice"] {
   if (choice === "auto") return "auto";
   if (choice === "any") return "required";
@@ -113,7 +113,7 @@ function encodeToolChoice(
 /** Project a neutral request onto `POST /v1/responses` streaming params. */
 export function encodeOpenAiRequest(
   request: LlmRequest,
-  options: WireOptions = {},
+  options: ProviderOptions = {},
 ): OpenAI.Responses.ResponseCreateParamsStreaming {
   const params: OpenAI.Responses.ResponseCreateParamsStreaming = {
     model: request.model,
@@ -295,8 +295,11 @@ class OpenAiDecoder
   }
 }
 
-/** The OpenAI Responses wire: one sdk client per connection. */
-export const openAiResponsesWire: WireFactory = (transport) => {
+/** The OpenAI Responses provider: one SDK client per connection. */
+export const openAiProvider: ProviderFactory = (
+  transport,
+  providerOptions = {},
+) => {
   const sdk = new OpenAI({
     // Credentials are always explicit; sdk env-var fallback is not used.
     // Both credential kinds map onto Authorization: Bearer.
@@ -310,9 +313,9 @@ export const openAiResponsesWire: WireFactory = (transport) => {
     ...(transport.fetch !== undefined ? { fetch: transport.fetch } : {}),
   });
   return {
-    async open(request, options, signal) {
+    async open(request, signal) {
       const { data, response } = await sdk.responses
-        .create(encodeOpenAiRequest(request, options), {
+        .create(encodeOpenAiRequest(request, providerOptions), {
           signal,
           headers: await transport.headers(),
         })

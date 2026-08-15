@@ -8,7 +8,7 @@ configured Codex client, with SDK-local mock tools, hooks, background tasks,
 notifications, and event streams. They deliberately do not import
 `@ephai/coding-agent`.
 
-Current live suite: 29 tests across 13 focused E2E files.
+Current live suite: 28 tests across 13 focused E2E files.
 
 The suite covers SDK-owned runtime behavior:
 
@@ -16,7 +16,7 @@ The suite covers SDK-owned runtime behavior:
 - Custom tool execution, validation, batch execution, and result ordering.
 - Terminal submission gates, rejection recovery, duplicate submission latching,
   and commit-window steering refusal.
-- Hook callbacks, post-hook denial, and a host-expressible advisory gate.
+- Hook callbacks and post-hook denial.
 - Background task registration, cancellation, failure settlement, notification
   wakeups, and text/terminal gates.
 - Notification coalescing, steer priority, and spoof-safe rendering.
@@ -26,9 +26,9 @@ The suite covers SDK-owned runtime behavior:
 - Runtime fixture configuration loaded from JSON and Markdown files.
 
 Host-policy behavior remains out of scope here: profile loading, subprocess hook
-runners, built-in coding-agent tools, advisor implementation details, subagent
-tool families, workflow submission bindings, and coding-agent notification rule
-wording belong in `@ephai/coding-agent` or unit tests around the owning package.
+runners, built-in coding-agent tools, subagent tool families, workflow submission
+bindings, and coding-agent notification rule wording belong in
+`@ephai/coding-agent` or unit tests around the owning package.
 
 ## Run Instructions
 
@@ -58,7 +58,7 @@ Run one feature suite:
 | Background tasks | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/background-tasks/background-tasks.e2e.ts` |
 | Fixture configuration | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/configuration/configuration.e2e.ts` |
 | Event stream | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/events/events.e2e.ts` |
-| Hooks and advisory gate | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/hooks/hooks.e2e.ts` |
+| Hooks | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/hooks/hooks.e2e.ts` |
 | Interruption | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/interruption/interruption.e2e.ts` |
 | Notifications | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/notification/notification.e2e.ts` |
 | SDK composition | `pnpm exec vitest run --config vitest.e2e.config.ts e2e/runtime/sdk-composition/sdk-composition.e2e.ts` |
@@ -128,7 +128,7 @@ The `configuration` suite is the reference pattern for custom test files:
 | `background-tasks/background-tasks.e2e.ts` | host cancellation wake; terminal gate while task open; failed task wake; completion-handler error | SDK background supervisor lifecycle, completion handlers, terminal blockers, failure settlement, completion-error events, and notification wakeups. |
 | `configuration/configuration.e2e.ts` | loads JSON scenario and Markdown system prompt | Reusable fixture/config architecture for custom scenario files. |
 | `events/events.e2e.ts` | dense sequence and tool lifecycle ordering | Live `AgentEvent` order, `seq` density, metadata propagation, and stream finality. |
-| `hooks/hooks.e2e.ts` | prehook denial and post observation; advisory gate; post-hook denial | Callback hook channels, recoverable hook denials, terminal hook visibility, and host-side advisory gating without `@ephai/coding-agent`. |
+| `hooks/hooks.e2e.ts` | prehook denial and post observation; post-hook denial | Callback hook channels, recoverable hook denials, terminal hook visibility, and post-hook denial without `@ephai/coding-agent`. |
 | `interruption/interruption.e2e.ts` | interrupt in-flight tool; interrupt parked task | Abort propagation, cancellation outcome, suppressed straggler completions, and run-end task disposal. |
 | `notification/notification.e2e.ts` | coalesced turn-boundary notification; steer priority and spoof escaping; tool-batch turn facts | Notification drain semantics, keyed replacement, event visibility, steer-before-notification order, safe rendering, and `turnBoundary` facts for tool turns. |
 | `sdk-composition/sdk-composition.e2e.ts` | global and per-agent hooks; concurrent template reuse | SDK construction composition, hook merge behavior, and isolated concurrent starts from one agent template. |
@@ -147,7 +147,7 @@ The `configuration` suite is the reference pattern for custom test files:
 | Agent loop | Terminal completion, text completion, tool-before-text, max-turn failure, steering, and event finality. | Provider restart histories and exact microtask races stay in unit/engine tests unless a live provider row is necessary. |
 | Terminal submission | Rejection recovery, submission id uniqueness, commit-window latch, duplicate batch denial, and notification/background blockers. | Workflow-owned `submit_*_outcome` bindings and planner/worker mutation are outside SDK. |
 | Tools | Custom tool execution, Zod input validation, context snapshot, concurrent batch overlap, throwing sibling recovery, and tool-result event ordering. | Built-in tool families, isolated workspace policy, allow lists, and unknown tool calls are host or unit territory. |
-| Hooks | Callback pre/post hooks, terminal hook visibility, post-hook denial, and advisory-pass seam through host tool plus prehook. | Subprocess hook runners, hook config files, exact advisor transcript policy, and verdict parsing are coding-agent-owned. |
+| Hooks | Callback pre/post hooks, terminal hook visibility, and post-hook denial. | Subprocess hook runners and hook config files are coding-agent-owned. |
 | Background tasks | Register/list/cancel, open-set lifecycle, completion handlers, completion-error events, task events, terminal/text blockers, natural failure settlement, and wake notifications. | Subagent recursion and fanout require host agent tools; silent empty wake is unit-covered. |
 | Notifications | Turn-boundary publication, tool-turn facts, key coalescing, background completion publication, steer priority, and spoof-safe rendering. | Budget ladder, idle reminder wording, and rule-file execution are coding-agent policy. |
 | Event stream | Dense live event stream, early-consumer detach, `run_finished` finality/outcome parity, and no raw stream deltas. | Durable event storage, run audit logs, transcript rollups, and cache-hit audit tables are coding-agent-owned. |
@@ -163,10 +163,9 @@ The `configuration` suite is the reference pattern for custom test files:
 | Phase 02.5 provider composition | Live runtime suite exercises the configured client through `createAgentRuntime`; missing/unavailable config clean-skips. | Provider profile construction and auth-claim fixtures. |
 | Phase 03 agent loop engine | Terminal completion, text completion, tool-before-text, max-turn failure, boundary steering, steer-driven park wake, interruption, event finality, and early event-consumer detach. | Scripted-only loop divergences and provider-history restart proofs unless promoted to an explicit live row. |
 | Phase 04 tool framework | Tool validation, custom execution, terminal submission, background gates, batch concurrency, batch event order, thrown sibling recovery, completion-error events, and hook pipeline behavior. | Old batch-forbidden flags, isolated workspace mode, and built-in tool families. |
-| Phase 04.5 agent runtime | Agent runtime wiring order through `createAgentRuntime`, concurrent template reuse, hooks, per-run notifier/supervisor handles, terminal submission, interruption, and fixture-driven setup. | Profile loader, run registry, subagent/advisor tools, transcript reader offsets, and durable record storage. |
+| Phase 04.5 agent runtime | Agent runtime wiring order through `createAgentRuntime`, concurrent template reuse, hooks, per-run notifier/supervisor handles, terminal submission, interruption, and fixture-driven setup. | Profile loader, run registry, subagent tools, transcript reader offsets, and durable record storage. |
 | Phase 04.6 runtime E2E | The current suite implements the SDK-owned rows: loop, tools, gates, notifications, event streams, interruption, text mode, fixture configuration, and clean skip behavior. | Recursive subagent cancellation, fanout, profile-kind boundaries, durable records, and legacy host sessions. |
 | Phase 04.7 run audit log | SDK exposes live events for hosts to consume. | Durable audit logs, transcript/result JSONL rollups, timeline files, and cache-hit audit tables are coding-agent-owned. |
-| Phase 04.8 advisory pass | Host-expressible advisory gate is tested as a custom advisor tool plus terminal `preToolUse` callback. | `ask_advisor` implementation, advisory metadata on selected host tools, and hook config scripts. |
 | Phase 04.9 notification trigger engine | `turnBoundary` hook publication, coalescing, priority, rendering, and task-completion publication are live-tested. | Notification rule files, subprocess trigger engine, budget/idle reminder wording. |
 | Phase 04.10 text termination | Bare-text completion, tool-before-text completion, text-mode task gate, and steer-extended text completion are live-tested. | Text-mode profile-file validation and parent/subagent settlement summaries. |
 
@@ -187,5 +186,5 @@ Portable into SDK runtime:
 Keep in host suites:
 
 - Profile files/frontmatter, hook config JSON, subprocess hook execution,
-  built-in coding-agent tools, subagent/advisor tool implementations, workflow
+  built-in coding-agent tools, subagent tool implementations, workflow
   bindings, transcript-offset readers, and notification rule wording.

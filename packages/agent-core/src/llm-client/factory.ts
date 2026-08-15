@@ -1,32 +1,18 @@
 import type { LlmClient } from "./client.js";
 import type { ProviderClientOptions } from "./config.js";
-import { resolveProfile, type ProviderConnection } from "./profiles.js";
-import { createPiAiClient } from "./pi-ai/adapter.js";
+import { createProvider } from "./providers/registry.js";
+import type { ProviderConnection } from "./providers/connection.js";
 import { LlmStreamClient } from "./stream-client.js";
-import type { WireTransport } from "./wires/wire.js";
 
 /**
- * Construct an `LlmClient` for a named provider connection: resolve the
- * profile, bind the access scheme to the wire as its transport, and wrap the
- * composition in the generic stream client. Invalid connections and codex
- * JWT-claim failures throw here (`ZodError` / `ProviderError` kind
- * `request`); the returned client honors the Phase 02 `LlmClient` leg
- * contract unchanged.
+ * Construct an `LlmClient` for a named direct provider connection. Provider
+ * modules own credentials, request encoding, native stream decoding, and
+ * provider-specific options; the shared stream client owns retry and
+ * lifecycle policy.
  */
 export function createLlmClient(
   connection: ProviderConnection,
   options: ProviderClientOptions = {},
 ): LlmClient {
-  const resolved = resolveProfile(connection);
-  if (resolved.kind === "pi_ai") {
-    return createPiAiClient(resolved.route, resolved.apiKey, options);
-  }
-  const { wire, wireOptions, access } = resolved;
-  const transport: WireTransport = {
-    baseUrl: access.baseUrl,
-    credential: access.credential,
-    headers: () => access.headers(),
-    ...(options.fetch !== undefined ? { fetch: options.fetch } : {}),
-  };
-  return new LlmStreamClient(wire(transport), wireOptions, options);
+  return new LlmStreamClient(createProvider(connection, options), options);
 }

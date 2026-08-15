@@ -9,9 +9,9 @@ import type { ProviderClientOptions } from "../../../src/llm-client/config.js";
 import { SecretString } from "../../../src/llm-client/secret.js";
 import { LlmStreamClient } from "../../../src/llm-client/stream-client.js";
 import {
-  anthropicMessagesWire,
+  anthropicProvider,
   encodeAnthropicRequest,
-} from "../../../src/llm-client/wires/anthropic-messages.js";
+} from "../../../src/llm-client/providers/anthropic.js";
 import { buildLlmRequest, type ReasoningEffort } from "../../../src/llm-client/types.js";
 import {
   collect,
@@ -239,7 +239,7 @@ describe("anthropic messages transport reliability", () => {
       () => sseResponse('event: message_stop\ndata: {"type":"message_stop"}\n\n'),
     ]);
     let attempts = 0;
-    const wire = anthropicMessagesWire({
+    const provider = anthropicProvider({
       baseUrl: "https://api.anthropic.com",
       credential: { kind: "api_key", secret: new SecretString("k") },
       headers: () => {
@@ -248,7 +248,7 @@ describe("anthropic messages transport reliability", () => {
       },
       fetch: stub.fetch,
     });
-    const headerClient = new LlmStreamClient(wire, {}, {
+    const headerClient = new LlmStreamClient(provider, {
       retry: { ...NO_RETRY, max_retries: 1 },
     });
     await collect(headerClient.streamMessage(buildLlmRequest({ model: "m" })));

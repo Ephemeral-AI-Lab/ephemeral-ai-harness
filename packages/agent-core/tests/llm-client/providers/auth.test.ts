@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { apiKeyAccess } from "../../../src/llm-client/access/api-key.js";
-import { claudeCodingPlanAccess } from "../../../src/llm-client/access/claude-coding-plan.js";
+import { apiKeyAuth } from "../../../src/llm-client/providers/api-key-auth.js";
+import { claudeCodingPlanAuth } from "../../../src/llm-client/providers/claude-coding-plan-auth.js";
 import {
   codexAccessClaimsFromJwt,
-  codexCodingPlanAccess,
-} from "../../../src/llm-client/access/codex-coding-plan.js";
+  codexCodingPlanAuth,
+} from "../../../src/llm-client/providers/codex-coding-plan-auth.js";
 import { ProviderError } from "../../../src/llm-client/errors.js";
 import { SecretString } from "../../../src/llm-client/secret.js";
 
@@ -23,23 +23,23 @@ function jwtWithAuthClaim(accountId: string | undefined, fedramp: boolean): stri
 
 describe("api key access", () => {
   it("yields an api_key credential with no extra headers", async () => {
-    const access = apiKeyAccess("https://api.anthropic.com", new SecretString("k"));
-    expect(access.baseUrl).toBe("https://api.anthropic.com");
-    expect(access.credential.kind).toBe("api_key");
-    expect(access.credential.secret.expose()).toBe("k");
-    await expect(access.headers()).resolves.toEqual({});
+    const auth = apiKeyAuth("https://api.anthropic.com", new SecretString("k"));
+    expect(auth.baseUrl).toBe("https://api.anthropic.com");
+    expect(auth.credential.kind).toBe("api_key");
+    expect(auth.credential.secret.expose()).toBe("k");
+    await expect(auth.headers()).resolves.toEqual({});
   });
 });
 
 describe("claude coding plan access", () => {
   it("yields an oauth bearer with the beta and identity headers", async () => {
-    const access = claudeCodingPlanAccess(
+    const auth = claudeCodingPlanAuth(
       "https://api.anthropic.com",
       new SecretString("oauth-token"),
     );
-    expect(access.credential.kind).toBe("bearer");
-    expect(access.credential.secret.expose()).toBe("oauth-token");
-    await expect(access.headers()).resolves.toEqual({
+    expect(auth.credential.kind).toBe("bearer");
+    expect(auth.credential.secret.expose()).toBe("oauth-token");
+    await expect(auth.headers()).resolves.toEqual({
       "anthropic-beta": "claude-code-20250219,oauth-2025-04-20",
       "anthropic-dangerous-direct-browser-access": "true",
       "user-agent": "claude-cli/2.1.75",
@@ -51,24 +51,24 @@ describe("claude coding plan access", () => {
 describe("codex coding plan access", () => {
   it("reads the account claim into bearer credentials and routing headers", async () => {
     const token = jwtWithAuthClaim("account-123", true);
-    const access = codexCodingPlanAccess(
+    const auth = codexCodingPlanAuth(
       "https://chatgpt.com/backend-api/codex",
       new SecretString(token),
     );
-    expect(access.credential.kind).toBe("bearer");
-    expect(access.credential.secret.expose()).toBe(token);
-    await expect(access.headers()).resolves.toEqual({
+    expect(auth.credential.kind).toBe("bearer");
+    expect(auth.credential.secret.expose()).toBe(token);
+    await expect(auth.headers()).resolves.toEqual({
       "chatgpt-account-id": "account-123",
       "x-openai-fedramp": "true",
     });
   });
 
   it("omits the fedramp header for non-fedramp accounts", async () => {
-    const access = codexCodingPlanAccess(
+    const auth = codexCodingPlanAuth(
       "https://chatgpt.com/backend-api/codex",
       new SecretString(jwtWithAuthClaim("account-123", false)),
     );
-    await expect(access.headers()).resolves.toEqual({
+    await expect(auth.headers()).resolves.toEqual({
       "chatgpt-account-id": "account-123",
     });
   });

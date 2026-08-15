@@ -18,9 +18,9 @@ import type {
 import {
   parseToolArgs,
   type StreamDecoder,
-  type WireFactory,
-  type WireOptions,
-} from "./wire.js";
+  type ProviderFactory,
+  type ProviderOptions,
+} from "./provider.js";
 
 /** §5 effort clamp: the messages api has no `minimal`, `max` is native. */
 const ANTHROPIC_EFFORT: Record<
@@ -124,7 +124,7 @@ function stampConversationTail(messages: Anthropic.MessageParam[]): void {
  */
 export function encodeAnthropicRequest(
   request: LlmRequest,
-  options: WireOptions = {},
+  options: ProviderOptions = {},
 ): Anthropic.MessageCreateParamsStreaming {
   const messages = request.messages.map(encodeMessage);
   const params: Anthropic.MessageCreateParamsStreaming = {
@@ -306,8 +306,11 @@ class AnthropicDecoder implements StreamDecoder<Anthropic.RawMessageStreamEvent>
   }
 }
 
-/** The Anthropic Messages wire: one sdk client per connection. */
-export const anthropicMessagesWire: WireFactory = (transport) => {
+/** The Anthropic Messages provider: one SDK client per connection. */
+export const anthropicProvider: ProviderFactory = (
+  transport,
+  providerOptions = {},
+) => {
   const { kind, secret } = transport.credential;
   const sdk = new Anthropic({
     // Credentials are always explicit; sdk env-var fallback is not used.
@@ -323,13 +326,13 @@ export const anthropicMessagesWire: WireFactory = (transport) => {
     ...(transport.fetch !== undefined ? { fetch: transport.fetch } : {}),
   });
   return {
-    async open(request, options, signal) {
+    async open(request, signal) {
       const { data, response } = await sdk.messages
-        .create(encodeAnthropicRequest(request, options), {
+        .create(encodeAnthropicRequest(request, providerOptions), {
           signal,
           headers: await transport.headers(),
         })
-        .withResponse();
+      .withResponse();
       return {
         stream: data,
         requestId: response.headers.get("request-id") ?? undefined,

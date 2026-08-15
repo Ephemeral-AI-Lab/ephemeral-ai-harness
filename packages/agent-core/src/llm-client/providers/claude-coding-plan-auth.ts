@@ -1,5 +1,5 @@
 import type { SecretString } from "../secret.js";
-import type { Access } from "./access.js";
+import type { ProviderAuth } from "./auth.js";
 
 /**
  * The OAuth beta transport shape required by Claude Code subscription access
@@ -13,10 +13,10 @@ const CLAUDE_CODING_PLAN_HEADERS: Readonly<Record<string, string>> = {
 };
 
 /** Claude coding-plan access: oauth bearer + Claude Code identity headers. */
-export function claudeCodingPlanAccess(
+export function claudeCodingPlanAuth(
   baseUrl: string,
   accessToken: SecretString,
-): Access {
+): ProviderAuth {
   return {
     baseUrl,
     credential: { kind: "bearer", secret: accessToken },

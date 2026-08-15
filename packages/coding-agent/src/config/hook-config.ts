@@ -1,8 +1,6 @@
 import type { HookDecision, HookEntry } from "@ephai/agent-core";
-import type { AgentHookFactories } from "@ephai/agent-engine/agents";
 import { z } from "zod";
 
-import { requireAdvisoryPass } from "./advisor-hook.js";
 import { executeJsonCommand } from "../scripts/execute-json-command.js";
 import { zodIssues } from "./diagnostics.js";
 import { loadEntriesFile, withDefaultCwd } from "./entries-file.js";
@@ -20,20 +18,11 @@ const HookCommandSchema = z.object({
   timeout_ms: z.number().int().positive().optional(),
 });
 
-const AdvisorHookModuleSchema = z.object({
-  path: z.literal("advisor-hook.ts"),
-  export: z.literal("requireAdvisoryPass").default("requireAdvisoryPass"),
-});
 const ToolMatcherSchema = z.object({ toolName: z.string().min(1) }).optional();
 
 const HookConfigEntrySchema = z.union([
   z.object({ event: z.literal("preToolUse"), matcher: ToolMatcherSchema, command: HookCommandSchema }),
   z.object({ event: z.literal("postToolUse"), matcher: ToolMatcherSchema, command: HookCommandSchema }),
-  z.object({
-    event: z.literal("preToolUse"),
-    hook: z.literal("advisor_approval"),
-    module: AdvisorHookModuleSchema,
-  }),
   z.object({ event: z.literal("turnBoundary"), command: HookCommandSchema }),
 ]);
 
@@ -45,7 +34,6 @@ const NotificationSchema = z.object({ notification: z.string().min(1).optional()
 
 export interface LoadedHookConfig {
   sdkHooks: HookEntry[];
-  agentHooks: AgentHookFactories;
 }
 
 export function loadHookConfig(path: string): LoadedHookConfig {
@@ -56,28 +44,13 @@ export function loadHookConfig(path: string): LoadedHookConfig {
     (entry, cwd) => ("command" in entry ? { ...entry, command: withDefaultCwd(entry.command, cwd) } : entry),
   );
   const sdkHooks: HookEntry[] = [];
-  const agentHooks: AgentHookFactories = {};
   for (const entry of entries) {
-    if ("hook" in entry) {
-      if (agentHooks.advisorApproval !== undefined) {
-        throw new Error(`hook config ${path} declares duplicate advisor_approval hooks`);
-      }
-      agentHooks.advisorApproval = compileAgentHook(entry);
-    } else {
-      sdkHooks.push(compileHook(entry));
-    }
+    sdkHooks.push(compileHook(entry));
   }
-  return { sdkHooks, agentHooks };
+  return { sdkHooks };
 }
 
-function compileAgentHook(entry: Extract<HookConfigEntry, { hook: "advisor_approval" }>) {
-  // The module schema pins the process-local implementation. This is a host hook
-  // factory, not a subprocess hook, because it closes over AdvisorPassRegistry.
-  void entry.module;
-  return requireAdvisoryPass;
-}
-
-function compileHook(entry: Exclude<HookConfigEntry, { hook: "advisor_approval" }>): HookEntry {
+function compileHook(entry: HookConfigEntry): HookEntry {
   if (entry.event === "turnBoundary") {
     return {
       event: "turnBoundary",

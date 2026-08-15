@@ -10,8 +10,8 @@ import { SecretString } from "../../../src/llm-client/secret.js";
 import { LlmStreamClient } from "../../../src/llm-client/stream-client.js";
 import {
   encodeOpenAiRequest,
-  openAiResponsesWire,
-} from "../../../src/llm-client/wires/openai-responses.js";
+  openAiProvider,
+} from "../../../src/llm-client/providers/openai.js";
 import { buildLlmRequest, type ReasoningEffort } from "../../../src/llm-client/types.js";
 import {
   collect,
@@ -227,7 +227,7 @@ describe("openai responses transport reliability", () => {
         ),
     ]);
     let attempts = 0;
-    const wire = openAiResponsesWire({
+    const provider = openAiProvider({
       baseUrl: "https://api.openai.com/v1",
       credential: { kind: "bearer", secret: new SecretString("k") },
       headers: () => {
@@ -236,7 +236,7 @@ describe("openai responses transport reliability", () => {
       },
       fetch: stub.fetch,
     });
-    const headerClient = new LlmStreamClient(wire, {}, {
+    const headerClient = new LlmStreamClient(provider, {
       retry: { ...NO_RETRY, max_retries: 1 },
     });
     await collect(headerClient.streamMessage(buildLlmRequest({ model: "gpt" })));

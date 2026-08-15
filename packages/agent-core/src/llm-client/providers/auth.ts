@@ -1,13 +1,13 @@
 import type { SecretString } from "../secret.js";
 
 /** How a credential rides the request: `x-api-key` or `Authorization: Bearer`. */
-interface AccessCredential {
+export interface ProviderCredential {
   kind: "api_key" | "bearer";
   secret: SecretString;
 }
 
 /**
- * A credential scheme: where requests go (`baseUrl`) and as-whom
+ * Provider authentication: where requests go (`baseUrl`) and as-whom
  * (`credential` plus per-attempt headers). An access scheme knows nothing
  * about wire protocols.
  *
@@ -16,8 +16,8 @@ interface AccessCredential {
  * touching the client, wires, or retry gate. Static schemes return a
  * constant.
  */
-export interface Access {
+export interface ProviderAuth {
   baseUrl: string;
-  credential: AccessCredential;
+  credential: ProviderCredential;
   headers(): Promise<Record<string, string>>;
 }

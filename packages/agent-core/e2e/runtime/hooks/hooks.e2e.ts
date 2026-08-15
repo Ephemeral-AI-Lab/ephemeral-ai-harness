@@ -9,7 +9,6 @@ import {
 } from "../../../src/index.js";
 import {
   RUNTIME_CLIENT_ID,
-  RuntimeOutcomeSchema,
   collectEvents,
   createRuntimeAgentRuntime,
   runtimeCodex,
@@ -128,100 +127,6 @@ describe.skipIf(!runtimeCodex.available)("runtime hooks over live codex (e2e)", 
   );
 
   it(
-    "expresses an advisory pass gate as a host tool plus terminal prehook",
-    { timeout: 240_000 },
-    async () => {
-      const advisoryPasses = new Set<string>();
-      const targetPayload: RuntimeOutcome = {
-        status: "completed",
-        codeword: "advisor-approved",
-      };
-      const askRuntimeAdvisor = defineTool({
-        name: "ask_runtime_advisor",
-        description:
-          "Record an advisory pass. Input is {tool_name, payload} for submit_runtime_outcome.",
-        input: z.object({
-          tool_name: z.literal("submit_runtime_outcome"),
-          payload: RuntimeOutcomeSchema,
-        }),
-        execute: (input) => {
-          advisoryPasses.add(advisoryKey(input.tool_name, input.payload));
-          return Promise.resolve({
-            output: {
-              verdict: "pass",
-              tool_name: input.tool_name,
-              payload: input.payload,
-            },
-          });
-        },
-      });
-      const hooks: HookEntry[] = [
-        {
-          event: "preToolUse",
-          matcher: { toolName: "submit_runtime_outcome" },
-          run: (call) =>
-            advisoryPasses.has(advisoryKey(call.toolName, call.input))
-              ? { decision: "passthrough" }
-              : {
-                  decision: "deny",
-                  reason:
-                    "submit_runtime_outcome requires ask_runtime_advisor for this exact payload",
-                },
-        },
-      ];
-      const sdk = createRuntimeAgentRuntime({ hooks });
-      const agent = sdk.createAgent<RuntimeOutcome>({
-        name: "runtime-advisory-gate",
-        llm: RUNTIME_CLIENT_ID,
-        systemPrompt: runtimeSystemPrompt(),
-        tools: [askRuntimeAdvisor],
-        agentOutcomeFn: runtimeOutcomeFn(),
-        maxTurns: 7,
-      });
-      const run = agent.start({
-        messages: [
-          userMessage(
-            [
-              `1. First call submit_runtime_outcome with ${JSON.stringify(targetPayload)}. This will be denied because the advisory pass is missing.`,
-              `2. After the tool error, call ask_runtime_advisor with {"tool_name":"submit_runtime_outcome","payload":${JSON.stringify(targetPayload)}}.`,
-              `3. After the advisor tool returns pass, call submit_runtime_outcome again with ${JSON.stringify(targetPayload)}.`,
-              "Do not write final prose.",
-            ].join("\n"),
-          ),
-        ],
-      });
-      const collected = collectEvents(run);
-
-      const outcome = await run.outcome();
-      await collected.done;
-
-      expect(outcome).toMatchObject({
-        status: "completed",
-        outcome: targetPayload,
-      });
-      const submissions = toolEvents(collected.events, "submit_runtime_outcome");
-      expect(
-        submissions.some(
-          (event) =>
-            event.is_error &&
-            event.output.includes("requires ask_runtime_advisor"),
-        ),
-        "first terminal attempt was blocked by the advisory prehook",
-      ).toBe(true);
-      expect(
-        toolEvents(collected.events, "ask_runtime_advisor").some(
-          (event) => !event.is_error,
-        ),
-        "host advisory tool recorded the exact pass",
-      ).toBe(true);
-      expect(
-        submissions.some((event) => !event.is_error && event.is_terminal),
-        "the same terminal payload succeeded after the pass",
-      ).toBe(true);
-    },
-  );
-
-  it(
     "maps postToolUse denial to a recoverable tool error",
     { timeout: 240_000 },
     async () => {
@@ -301,21 +206,3 @@ describe.skipIf(!runtimeCodex.available)("runtime hooks over live codex (e2e)", 
   );
 });
 
-function advisoryKey(toolName: string, payload: unknown): string {
-  return `${toolName}:${stableJson(payload)}`;
-}
-
-function stableJson(value: unknown): string {
-  if (Array.isArray(value)) {
-    return `[${value.map((entry) => stableJson(entry)).join(",")}]`;
-  }
-  if (typeof value === "object" && value !== null) {
-    const entries = Object.entries(value as Record<string, unknown>).sort(([a], [b]) =>
-      a.localeCompare(b),
-    );
-    return `{${entries
-      .map(([key, entry]) => `${JSON.stringify(key)}:${stableJson(entry)}`)
-      .join(",")}}`;
-  }
-  return JSON.stringify(value);
-}

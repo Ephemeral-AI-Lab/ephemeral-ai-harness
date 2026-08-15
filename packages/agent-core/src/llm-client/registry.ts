@@ -2,9 +2,9 @@ import { DEFAULT_MAX_TOKENS } from "../contracts/index.js";
 import {
   createLlmClient,
   type LlmClient,
-  type ProviderConnection,
   type ReasoningEffort,
 } from "./index.js";
+import type { ProviderConnection } from "./providers/connection.js";
 
 /** A named model profile; `AgentSpec.llm` resolves against the config keys. */
 export type LlmRef = string;

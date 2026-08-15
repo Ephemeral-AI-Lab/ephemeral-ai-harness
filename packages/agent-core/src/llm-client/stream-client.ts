@@ -9,7 +9,7 @@ import { ProviderError, toProviderError } from "./errors.js";
 import type { LlmStreamEvent } from "./events.js";
 import { retryStream } from "./retry.js";
 import type { LlmRequest } from "./types.js";
-import type { Wire, WireOptions } from "./wires/wire.js";
+import type { Provider } from "./providers/provider.js";
 
 class IdleTimeoutSignal extends Error {}
 
@@ -64,16 +64,15 @@ async function* withIdleGuard<T>(
 }
 
 /**
- * Run one wire attempt: open the sdk stream (the wire pulls per-attempt
+ * Run one provider attempt: open the SDK stream (the provider pulls per-attempt
  * headers from its transport), guard it with the idle watchdog, feed events
  * through the decoder, and enforce the leg contract (exactly one
  * terminal event; a clean end without it is a truncated stream). Caller
  * aborts are rethrown as-is.
  */
 async function* runAttempt(
-  wire: Wire,
+  provider: Provider,
   request: LlmRequest,
-  wireOptions: WireOptions,
   idleTimeoutMs: number,
   signal: AbortSignal | undefined,
 ): AsyncGenerator<LlmStreamEvent> {
@@ -84,16 +83,12 @@ async function* runAttempt(
   let stream: AsyncIterable<unknown>;
   let requestId: string | undefined;
   try {
-    ({ stream, requestId } = await wire.open(
-      request,
-      wireOptions,
-      attemptSignal,
-    ));
+    ({ stream, requestId } = await provider.open(request, attemptSignal));
   } catch (error) {
     if (signal?.aborted) throw error;
     throw toProviderError(error, "open");
   }
-  const decoder = wire.decoder(requestId);
+  const decoder = provider.decoder(requestId);
   try {
     for await (const event of withIdleGuard(
       stream,
@@ -116,24 +111,21 @@ async function* runAttempt(
 }
 
 /**
- * The one generic streaming client: a wire composed with an access scheme's
- * transport (bound in the factory), wrapped in the visible-output retry gate
+ * The one generic streaming client: a direct provider wrapped in the
+ * visible-output retry gate
  * and the idle guard. Implements the `LlmClient` leg contract
  * unchanged from Phase 02.
  */
 export class LlmStreamClient implements LlmClient {
-  readonly #wire: Wire;
-  readonly #wireOptions: WireOptions;
+  readonly #provider: Provider;
   readonly #retry: RetryConfig;
   readonly #idleTimeoutMs: number;
 
   constructor(
-    wire: Wire,
-    wireOptions: WireOptions = {},
+    provider: Provider,
     options: ProviderClientOptions = {},
   ) {
-    this.#wire = wire;
-    this.#wireOptions = wireOptions;
+    this.#provider = provider;
     this.#retry = RetryConfigSchema.parse(options.retry ?? {});
     this.#idleTimeoutMs =
       StreamGuardConfigSchema.parse(options.streamGuard ?? {}).idle_timeout_s *
@@ -146,9 +138,8 @@ export class LlmStreamClient implements LlmClient {
   ): AsyncIterable<LlmStreamEvent> {
     const attempt = () =>
       runAttempt(
-        this.#wire,
+        this.#provider,
         request,
-        this.#wireOptions,
         this.#idleTimeoutMs,
         options?.signal,
       );

@@ -2,15 +2,6 @@ export {
   buildAgentFactory,
   type AgentFactoryBuildOptions,
 } from "./agent-factory.js";
-export {
-  AdvisorPassRegistry,
-  canonicalJson,
-  createAgentOutcomeFnWithAdvisory,
-  requireNoBackgroundTasks,
-  withAdvisory,
-  type AgentHookFactories,
-  type AgentOutcomeFnWithAdvisory,
-} from "./outcome-advisory.js";
 export type {
   Agent,
   AgentFactory,

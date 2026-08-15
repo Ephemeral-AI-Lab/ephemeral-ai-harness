@@ -1,8 +1,7 @@
-import { createAgentRuntime } from "@ephai/agent-core";
+import { createAgentOutcomeFn, createAgentRuntime } from "@ephai/agent-core";
 import {
   type Agent,
   buildAgentFactory,
-  createAgentOutcomeFnWithAdvisory,
   type AgentFactory,
 } from "@ephai/agent-engine/agents";
 import { JsonlAgentRunStore } from "@ephai/agent-engine/runs";
@@ -16,8 +15,6 @@ type MainOutcome = z.infer<typeof MainOutcomeSchema>;
 
 const SUBMIT_MAIN_DESCRIPTION =
   "Finish the operator run by submitting its final outcome summary.";
-const MAIN_ADVISOR_PROMPT =
-  "Review whether the operator's terminal submission faithfully completes the user's goal.";
 
 export interface CodingAgent {
   agents: AgentFactory;
@@ -42,14 +39,12 @@ export function bootstrap(configRoot: string = ephaiConfigRoot()): CodingAgent {
     agentRuntime,
     profiles: cfg.profiles,
     agentRunStore,
-    agentHooks: cfg.agentHooks,
   });
 
-  const mainOutcomeFn = createAgentOutcomeFnWithAdvisory({
+  const mainOutcomeFn = createAgentOutcomeFn({
     name: "submit_main_outcome",
     description: SUBMIT_MAIN_DESCRIPTION,
     schema: MainOutcomeSchema,
-    advisoryPrompt: MAIN_ADVISOR_PROMPT,
   });
 
   const operator = agents.create("operator", mainOutcomeFn);

@@ -1,7 +1,7 @@
 import { toolUseIdFrom } from "../../src/contracts/index.js";
 
 import { createLlmClient } from "../../src/llm-client/factory.js";
-import type { ProviderConnection } from "../../src/llm-client/profiles.js";
+import type { ProviderConnection } from "../../src/llm-client/providers/connection.js";
 import { buildLlmRequest, type LlmRequestInit } from "../../src/llm-client/types.js";
 import {
   describeLlmClientContract,

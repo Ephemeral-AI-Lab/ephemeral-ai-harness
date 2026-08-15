@@ -5,10 +5,10 @@ import { createLlmClient } from "../../src/llm-client/factory.js";
 import {
   ProviderConnectionSchema,
   type ProviderConnection,
-} from "../../src/llm-client/profiles.js";
+} from "../../src/llm-client/providers/connection.js";
 import { SecretString } from "../../src/llm-client/secret.js";
-import { encodeAnthropicRequest } from "../../src/llm-client/wires/anthropic-messages.js";
-import { encodeOpenAiRequest } from "../../src/llm-client/wires/openai-responses.js";
+import { encodeAnthropicRequest } from "../../src/llm-client/providers/anthropic.js";
+import { encodeOpenAiRequest } from "../../src/llm-client/providers/openai.js";
 import { buildLlmRequest } from "../../src/llm-client/types.js";
 import { collect, fetchStub, fixture, sseResponse } from "./support.js";
 

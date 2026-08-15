@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { ProviderError } from "../errors.js";
 import type { SecretString } from "../secret.js";
-import type { Access } from "./access.js";
+import type { ProviderAuth } from "./auth.js";
 
 /** The namespaced claim where ChatGPT account metadata is stored. */
 const OPENAI_AUTH_CLAIM = "https://api.openai.com/auth";
@@ -78,10 +78,10 @@ export function codexAccessClaimsFromJwt(token: string): CodexAccessClaims {
  * Codex coding-plan access: ChatGPT-managed bearer plus account routing
  * headers derived from the token's JWT claims at construction time.
  */
-export function codexCodingPlanAccess(
+export function codexCodingPlanAuth(
   baseUrl: string,
   accessToken: SecretString,
-): Access {
+): ProviderAuth {
   const claims = codexAccessClaimsFromJwt(accessToken.expose());
   const headers: Record<string, string> = {
     "chatgpt-account-id": claims.accountId,
