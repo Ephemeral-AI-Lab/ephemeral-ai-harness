@@ -1,0 +1,30 @@
+{
+  "name": "@ephemeralai/agent-core",
+  "version": "0.1.0",
+  "description": "Provider-neutral runtime primitives for AI agent runs.",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "pnpm clean && tsc -p tsconfig.json",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && node --test test/agent.test.mjs"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "packageManager": "pnpm@10.32.1",
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
