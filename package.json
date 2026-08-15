@@ -9,14 +9,6 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./nodes": {
-      "types": "./src/nodes/index.ts",
-      "default": "./src/nodes/index.ts"
-    },
-    "./agentic-workflows": {
-      "types": "./src/agentic-workflows/index.ts",
-      "default": "./src/agentic-workflows/index.ts"
-    },
     "./agents": {
       "types": "./src/agents/index.ts",
       "default": "./src/agents/index.ts"

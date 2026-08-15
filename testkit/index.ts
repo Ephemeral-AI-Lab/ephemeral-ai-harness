@@ -14,4 +14,3 @@ export {
 } from "./scripted-llm.js";
 export { scriptedTool } from "./scripted-tools.js";
 export { writeTranscriptFixture } from "./transcript-fixture.js";
-export { FakeNodeRunner } from "./fake-node-runner.js";

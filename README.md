@@ -206,8 +206,6 @@ self-hosted). Credentials accept a raw string or a `SecretString`.
 | `src/agents/background` | The run-scoped background-task supervisor. |
 | `src/agents/notification` | The inbox the loop drains and the host-facing `Notifier`. |
 | `src/runs` | Shared run handles, event streams, interruption, and record-scope primitives. |
-| `src/nodes` | Node definitions, node inputs, node outcome contracts, node run handles, and the `NodeRunner` boundary. |
-| `src/workflows` | Workflow contracts, ledger, and state-machine runtime. |
 
 ## Scripts
 
