@@ -1,5 +1,5 @@
 {
-  "name": "@ephai/coding-agent",
+  "name": "@ephai/agent-harness",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,6 +8,22 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./agents": {
+      "types": "./src/agents/index.ts",
+      "default": "./src/agents/index.ts"
+    },
+    "./runs": {
+      "types": "./src/runs/index.ts",
+      "default": "./src/runs/index.ts"
+    },
+    "./tools": {
+      "types": "./src/tools/index.ts",
+      "default": "./src/tools/index.ts"
+    },
+    "./scripts": {
+      "types": "./src/scripts/index.ts",
+      "default": "./src/scripts/index.ts"
     }
   },
   "scripts": {
@@ -24,8 +40,6 @@
   ],
   "dependencies": {
     "@ephai/agent-core": "workspace:*",
-    "@ephai/agent-engine": "workspace:*",
-    "yaml": "^2.6.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {

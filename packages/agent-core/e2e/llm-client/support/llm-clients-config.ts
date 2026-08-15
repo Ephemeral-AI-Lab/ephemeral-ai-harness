@@ -58,7 +58,7 @@ function defaultConfigPath(env: NodeJS.ProcessEnv): string {
     join(
       resolve(import.meta.dirname, "../../../.."),
       "packages",
-      "coding-agent",
+      "agent-harness",
       ".ephai",
       "llm-clients",
       "llm-clients.json",

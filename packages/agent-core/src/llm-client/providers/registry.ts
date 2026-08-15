@@ -23,7 +23,7 @@ function transport(
   return {
     baseUrl: auth.baseUrl,
     credential: auth.credential,
-    headers: auth.headers,
+    headers: () => auth.headers(),
     ...(options.fetch !== undefined ? { fetch: options.fetch } : {}),
   };
 }

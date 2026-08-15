@@ -4,7 +4,7 @@ A **mechanism-only** agent runtime for TypeScript. It runs the agent loop —
 provider turns, a tool-call batch executor, hooks, background tasks,
 notifications, steering/interruption, and a JSONL run record — and **ships zero
 tools and zero policy**. Every tool, every prompt, and every gate is authored by
-the host. The coding-agent product is one such host; this package owns only the
+the host. The agent-harness product is one such host; this package owns only the
 runtime spine beneath it.
 
 > Status: pre-release (`0.0.0`, private workspace package). Consumed as TypeScript

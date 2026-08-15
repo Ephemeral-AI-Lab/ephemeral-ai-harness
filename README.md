@@ -1,19 +1,18 @@
 # ephemeral-ai-harness
 
-`ephemeral-ai-harness` is a three-package agent runtime stack:
+`ephemeral-ai-harness` is a two-package agent runtime stack:
 
 ```text
 @ephai/agent-core       generic runtime kernel
           ↑
-@ephai/agent-engine     agent profiles, subagents, run stores
+@ephai/agent-harness    agent profiles, subagents, tools, and run stores
           ↑
-@ephai/coding-agent     product composition root and CLI
 ```
 
 Packages live under [`packages/`](./packages/). The core package owns the
 provider-neutral agent loop, contracts, tools, notifications, background tasks,
-and LLM adapters. The engine adds reusable agent orchestration. The coding-agent
-package composes those capabilities into a host application.
+and LLM adapters. The harness package adds agent profiles, subagent tools,
+durable run stores, and the injected composition API.
 
 Run all package checks with:
 
