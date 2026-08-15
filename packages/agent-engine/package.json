@@ -1,33 +1,35 @@
 {
-  "name": "@ephai/agent-core",
+  "name": "@ephai/agent-engine",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.23.0",
-  "engines": {
-    "node": ">=22.19.0"
-  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./testkit": {
-      "types": "./testkit/index.ts",
-      "default": "./testkit/index.ts"
+    "./agents": {
+      "types": "./src/agents/index.ts",
+      "default": "./src/agents/index.ts"
+    },
+    "./runs": {
+      "types": "./src/runs/index.ts",
+      "default": "./src/runs/index.ts"
+    },
+    "./tools": {
+      "types": "./src/tools/index.ts",
+      "default": "./src/tools/index.ts"
     }
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run test"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "0.104.1",
-    "@earendil-works/pi-ai": "0.82.1",
-    "openai": "6.42.0",
+    "@ephai/agent-core": "workspace:*",
     "zod": "^4.4.3"
   },
   "devDependencies": {

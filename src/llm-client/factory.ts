@@ -1,6 +1,7 @@
 import type { LlmClient } from "./client.js";
 import type { ProviderClientOptions } from "./config.js";
 import { resolveProfile, type ProviderConnection } from "./profiles.js";
+import { createPiAiClient } from "./pi-ai/adapter.js";
 import { LlmStreamClient } from "./stream-client.js";
 import type { WireTransport } from "./wires/wire.js";
 
@@ -16,7 +17,11 @@ export function createLlmClient(
   connection: ProviderConnection,
   options: ProviderClientOptions = {},
 ): LlmClient {
-  const { wire, wireOptions, access } = resolveProfile(connection);
+  const resolved = resolveProfile(connection);
+  if (resolved.kind === "pi_ai") {
+    return createPiAiClient(resolved.route, resolved.apiKey, options);
+  }
+  const { wire, wireOptions, access } = resolved;
   const transport: WireTransport = {
     baseUrl: access.baseUrl,
     credential: access.credential,

@@ -45,48 +45,72 @@ export const ProviderConnectionSchema = z.discriminatedUnion("provider", [
     base_url: z.string().default("https://chatgpt.com/backend-api/codex"),
     access_token: secretString,
   }),
+  z.object({
+    provider: z.literal("pi_ai"),
+    route: z.string().min(1),
+    api_key: secretString,
+  }),
 ]);
 
 export type ProviderConnection = z.input<typeof ProviderConnectionSchema>;
 
 /** A profile resolved to its composition parts; consumed by the factory. */
 interface ResolvedProfile {
+  kind: "wire";
   wire: WireFactory;
   wireOptions: WireOptions;
   access: Access;
 }
+
+interface ResolvedPiAiProfile {
+  kind: "pi_ai";
+  route: string;
+  apiKey: SecretString;
+}
+
+type ResolvedConnection = ResolvedProfile | ResolvedPiAiProfile;
 
 /**
  * The only vendor-aware mapping in the package: provider id -> { connection
  * schema (above), wire, wire options, access, default `base_url` }. Adding a
  * provider is one access module and/or one wire module plus one entry here.
  */
-export function resolveProfile(connection: ProviderConnection): ResolvedProfile {
+export function resolveProfile(connection: ProviderConnection): ResolvedConnection {
   const parsed = ProviderConnectionSchema.parse(connection);
   switch (parsed.provider) {
     case "anthropic_api":
       return {
+        kind: "wire",
         wire: anthropicMessagesWire,
         wireOptions: {},
         access: apiKeyAccess(parsed.base_url, parsed.api_key),
       };
     case "openai_api":
       return {
+        kind: "wire",
         wire: openAiResponsesWire,
         wireOptions: { dialect: "public" },
         access: apiKeyAccess(parsed.base_url, parsed.api_key),
       };
     case "claude_coding_plan":
       return {
+        kind: "wire",
         wire: anthropicMessagesWire,
         wireOptions: { systemPrefix: CLAUDE_CODE_SYSTEM_PREFIX },
         access: claudeCodingPlanAccess(parsed.base_url, parsed.access_token),
       };
     case "codex_coding_plan":
       return {
+        kind: "wire",
         wire: openAiResponsesWire,
         wireOptions: { dialect: "codex" },
         access: codexCodingPlanAccess(parsed.base_url, parsed.access_token),
+      };
+    case "pi_ai":
+      return {
+        kind: "pi_ai",
+        route: parsed.route,
+        apiKey: parsed.api_key,
       };
   }
 }
