@@ -30,17 +30,17 @@ runtime spine beneath it.
 ## Run anatomy
 
 ```
-createAgentRuntime(config)                         src/agents/agent-runtime.ts
+createAgentRuntime(config)                         src/agent-runtime.ts
   └─ runtime.createAgent(spec)    → Agent       (validates llm ref + tool names)
        └─ agent.start({messages}) → AgentRunHandle
-            run loop                         ─▶  src/agents/engine/
-              ├─ provider turn      ─────────▶  src/agents/llm-client/
-              ├─ tool batch         ─────────▶  src/agents/tool/
+            run loop                         ─▶  src/engine/
+              ├─ provider turn      ─────────▶  src/llm-client/
+              ├─ tool batch         ─────────▶  src/tool/
               │    ├─ preToolUse / postToolUse hooks
-              │    ├─ background tasks ───────▶  src/agents/background/
-              │    └─ notifications  ─────────▶  src/agents/notification/
+              │    ├─ background tasks ───────▶  src/background/
+              │    └─ notifications  ─────────▶  src/notification/
               ├─ steer() / interrupt() at boundaries
-              └─ records ────────────────────▶  src/agents/engine/records.ts
+              └─ records ────────────────────▶  src/engine/records.ts
 ```
 
 ## Quick start
@@ -199,12 +199,12 @@ self-hosted). Credentials accept a raw string or a `SecretString`.
 | Module | Owns |
 |---|---|
 | `src/contracts` | Typed IDs, the JSON value model, message/content-block schemas, the settled tool-call DTO. |
-| `src/agents` | Generic agent contracts, `createAgentRuntime`, direct agent run handles, and the SDK-owned agent runtime infrastructure. |
-| `src/agents/llm-client` | `LlmClient`, the Anthropic/OpenAI wires, access (auth) strategies, retry, streaming, and the runtime profile registry. |
-| `src/agents/engine` | The run loop: `RunHandle` + events, `Conversation`, the provider turn, the tool-executor port, and the agent JSONL records writer. |
-| `src/agents/tool` | `defineTool`, the batch executor + pipeline, the `HookEngine`, and the terminal-outcome factory. |
-| `src/agents/background` | The run-scoped background-task supervisor. |
-| `src/agents/notification` | The inbox the loop drains and the host-facing `Notifier`. |
+| `src/agent-runtime.ts`, `src/agent.ts`, `src/agent-run.ts` | Generic agent contracts, `createAgentRuntime`, direct agent run handles, and the SDK-owned agent runtime infrastructure. |
+| `src/llm-client` | `LlmClient`, the Anthropic/OpenAI wires, access (auth) strategies, retry, streaming, and the runtime profile registry. |
+| `src/engine` | The run loop: `RunHandle` + events, `Conversation`, the provider turn, the tool-executor port, and the agent JSONL records writer. |
+| `src/tool` | `defineTool`, the batch executor + pipeline, the `HookEngine`, and the terminal-outcome factory. |
+| `src/background` | The run-scoped background-task supervisor. |
+| `src/notification` | The inbox the loop drains and the host-facing `Notifier`. |
 | `src/runs` | Shared run handles, event streams, interruption, and record-scope primitives. |
 
 ## Scripts

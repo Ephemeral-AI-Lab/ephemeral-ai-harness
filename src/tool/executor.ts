@@ -1,4 +1,4 @@
-import type { ToolCallResult, ToolSpec, ToolUseId } from "../../contracts/index.js";
+import type { ToolCallResult, ToolSpec, ToolUseId } from "../contracts/index.js";
 import type {
   ToolBatchContext,
   ToolExecutor,

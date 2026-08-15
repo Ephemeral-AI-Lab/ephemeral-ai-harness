@@ -7,10 +7,10 @@ import {
   type JsonObject,
 } from "../../../src/contracts/index.js";
 
-import type { LlmClient } from "../../../src/agents/llm-client/client.js";
-import { ProviderError } from "../../../src/agents/llm-client/errors.js";
-import type { LlmStreamEvent } from "../../../src/agents/llm-client/events.js";
-import type { LlmRequest, UsageSnapshot } from "../../../src/agents/llm-client/types.js";
+import type { LlmClient } from "../../../src/llm-client/client.js";
+import { ProviderError } from "../../../src/llm-client/errors.js";
+import type { LlmStreamEvent } from "../../../src/llm-client/events.js";
+import type { LlmRequest, UsageSnapshot } from "../../../src/llm-client/types.js";
 import { collect, collectUntilError } from "../support.js";
 
 export interface Scenario {

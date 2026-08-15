@@ -1,4 +1,4 @@
-import type { JsonObject, Message, ToolUseId } from "../../contracts/index.js";
+import type { JsonObject, Message, ToolUseId } from "../contracts/index.js";
 
 import type { UsageSnapshot } from "./types.js";
 

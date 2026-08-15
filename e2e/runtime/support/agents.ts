@@ -12,7 +12,7 @@ import {
   type Agent,
   type AgentRuntime,
   type AgentRuntimeConfig,
-} from "../../../src/agents/index.js";
+} from "../../../src/index.js";
 
 import { RUNTIME_CLIENT_ID, runtimeCodex } from "./config.js";
 

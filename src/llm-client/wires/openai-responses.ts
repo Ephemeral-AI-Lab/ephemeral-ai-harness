@@ -5,7 +5,7 @@ import {
   type ContentBlock,
   type Message,
   type ToolSpec,
-} from "../../../contracts/index.js";
+} from "../../contracts/index.js";
 
 import { ProviderError } from "../errors.js";
 import type { LlmStreamEvent, StopReason } from "../events.js";

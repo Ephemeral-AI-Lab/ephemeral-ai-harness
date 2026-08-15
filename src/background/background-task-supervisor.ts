@@ -1,7 +1,7 @@
 import {
   mintBackgroundTaskId,
   type BackgroundTaskId,
-} from "../../contracts/index.js";
+} from "../contracts/index.js";
 import type { Notifier } from "../notification/index.js";
 
 import type {

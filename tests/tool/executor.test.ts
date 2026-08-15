@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { defineTool } from "../../src/agents/tool/define.js";
-import { createAgentOutcomeFn } from "../../src/agents/tool/outcome.js";
-import { buildToolExecutor } from "../../src/agents/tool/toolset.js";
-import type { TerminalGate } from "../../src/agents/tool/terminal.js";
+import { defineTool } from "../../src/tool/define.js";
+import { createAgentOutcomeFn } from "../../src/tool/outcome.js";
+import { buildToolExecutor } from "../../src/tool/toolset.js";
+import type { TerminalGate } from "../../src/tool/terminal.js";
 import { batchFixture, call, scopeFixture } from "./support.js";
 
 const OPEN_GATE: TerminalGate = {

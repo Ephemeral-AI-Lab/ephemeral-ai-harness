@@ -5,7 +5,7 @@ import { toolUseIdFrom } from "../../src/contracts/index.js";
 import {
   Conversation,
   type ConversationEntry,
-} from "../../src/agents/engine/conversation.js";
+} from "../../src/engine/conversation.js";
 
 function fixture(): { conversation: Conversation; entries: ConversationEntry[] } {
   const entries: ConversationEntry[] = [];

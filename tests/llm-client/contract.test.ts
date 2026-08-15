@@ -1,8 +1,8 @@
 import { toolUseIdFrom } from "../../src/contracts/index.js";
 
-import { createLlmClient } from "../../src/agents/llm-client/factory.js";
-import type { ProviderConnection } from "../../src/agents/llm-client/profiles.js";
-import { buildLlmRequest, type LlmRequestInit } from "../../src/agents/llm-client/types.js";
+import { createLlmClient } from "../../src/llm-client/factory.js";
+import type { ProviderConnection } from "../../src/llm-client/profiles.js";
+import { buildLlmRequest, type LlmRequestInit } from "../../src/llm-client/types.js";
 import {
   describeLlmClientContract,
   type Scenario,

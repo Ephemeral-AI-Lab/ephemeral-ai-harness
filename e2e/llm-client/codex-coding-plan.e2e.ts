@@ -6,7 +6,7 @@ import {
   buildLlmRequest,
   type LlmClient,
   type LlmRequestInit,
-} from "../../src/agents/llm-client/index.js";
+} from "../../src/llm-client/index.js";
 import { describeLlmClientContract } from "../../tests/llm-client/contract/llm-client-contract.js";
 import { loadConfiguredCodexClient } from "./support/llm-clients-config.js";
 

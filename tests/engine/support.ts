@@ -12,23 +12,23 @@ import type {
   LlmStreamOptions,
   StopReason,
   UsageSnapshot,
-} from "../../src/agents/llm-client/index.js";
-import { NotificationInbox, type Notifier } from "../../src/agents/notification/index.js";
-import type { BackgroundTaskSupervisor } from "../../src/agents/background/index.js";
+} from "../../src/llm-client/index.js";
+import { NotificationInbox, type Notifier } from "../../src/notification/index.js";
+import type { BackgroundTaskSupervisor } from "../../src/background/index.js";
 
 import {
   runAgentLoop,
   type TaskRegistryGate,
   type TerminationMode,
   type TurnFacts,
-} from "../../src/agents/engine/agent-loop.js";
-import { Conversation, type ConversationEntry } from "../../src/agents/engine/conversation.js";
-import { RunHandle, type AgentEvent } from "../../src/agents/engine/run-handle.js";
+} from "../../src/engine/agent-loop.js";
+import { Conversation, type ConversationEntry } from "../../src/engine/conversation.js";
+import { RunHandle, type AgentEvent } from "../../src/engine/run-handle.js";
 import type {
   ToolBatchContext,
   ToolExecutor,
   ToolUseBlock,
-} from "../../src/agents/engine/tool-executor.js";
+} from "../../src/engine/tool-executor.js";
 
 // --- scripted provider client (engine-local; testkit depends on tool) ---
 

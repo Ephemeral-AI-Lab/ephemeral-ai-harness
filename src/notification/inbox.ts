@@ -1,4 +1,4 @@
-import type { JsonObject, UserMessage } from "../../contracts/index.js";
+import type { JsonObject, UserMessage } from "../contracts/index.js";
 
 interface InboxEntry {
   message: string;

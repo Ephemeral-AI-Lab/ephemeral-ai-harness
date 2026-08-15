@@ -1,4 +1,4 @@
-import type { JsonObject, ToolUseId } from "../../contracts/index.js";
+import type { JsonObject, ToolUseId } from "../contracts/index.js";
 import type { TurnFacts } from "../engine/index.js";
 import type { Notifier } from "../notification/index.js";
 

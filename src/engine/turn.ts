@@ -1,4 +1,4 @@
-import type { ContentBlock, Message, ToolSpec } from "../../contracts/index.js";
+import type { ContentBlock, Message, ToolSpec } from "../contracts/index.js";
 import {
   ProviderError,
   type LlmClient,

@@ -1,4 +1,4 @@
-import type { JsonObject } from "../../../contracts/index.js";
+import type { JsonObject } from "../../contracts/index.js";
 
 import type { LlmStreamEvent } from "../events.js";
 import type { SecretString } from "../secret.js";

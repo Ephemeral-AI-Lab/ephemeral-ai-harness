@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { ProviderError } from "../../src/agents/llm-client/errors.js";
-import { createLlmClient } from "../../src/agents/llm-client/factory.js";
+import { ProviderError } from "../../src/llm-client/errors.js";
+import { createLlmClient } from "../../src/llm-client/factory.js";
 import {
   ProviderConnectionSchema,
   type ProviderConnection,
-} from "../../src/agents/llm-client/profiles.js";
-import { SecretString } from "../../src/agents/llm-client/secret.js";
-import { encodeAnthropicRequest } from "../../src/agents/llm-client/wires/anthropic-messages.js";
-import { encodeOpenAiRequest } from "../../src/agents/llm-client/wires/openai-responses.js";
-import { buildLlmRequest } from "../../src/agents/llm-client/types.js";
+} from "../../src/llm-client/profiles.js";
+import { SecretString } from "../../src/llm-client/secret.js";
+import { encodeAnthropicRequest } from "../../src/llm-client/wires/anthropic-messages.js";
+import { encodeOpenAiRequest } from "../../src/llm-client/wires/openai-responses.js";
+import { buildLlmRequest } from "../../src/llm-client/types.js";
 import { collect, fetchStub, fixture, sseResponse } from "./support.js";
 
 const NO_RETRY = { max_retries: 0, base_delay_s: 0, max_delay_s: 0 };

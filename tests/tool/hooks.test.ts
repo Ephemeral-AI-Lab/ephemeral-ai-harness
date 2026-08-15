@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { toolUseIdFrom } from "../../src/contracts/index.js";
 
-import { HookEngine, type ToolCallFacts } from "../../src/agents/tool/hooks.js";
+import { HookEngine, type ToolCallFacts } from "../../src/tool/hooks.js";
 
 const FACTS: ToolCallFacts = {
   toolUseId: toolUseIdFrom("t1"),

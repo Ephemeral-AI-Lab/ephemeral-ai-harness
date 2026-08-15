@@ -1,4 +1,4 @@
-import type { ContentBlock, Message, UserMessage } from "../../contracts/index.js";
+import type { ContentBlock, Message, UserMessage } from "../contracts/index.js";
 
 /** A `tool_result` content block, the unit `appendToolResults` wraps. */
 export type ToolResultBlock = Extract<ContentBlock, { type: "tool_result" }>;

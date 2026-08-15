@@ -3,7 +3,7 @@ import {
   toolUses,
   type Message,
   type ToolCallResult,
-} from "../../contracts/index.js";
+} from "../contracts/index.js";
 import { ProviderError, type UsageSnapshot } from "../llm-client/index.js";
 import {
   systemNotificationMessage,

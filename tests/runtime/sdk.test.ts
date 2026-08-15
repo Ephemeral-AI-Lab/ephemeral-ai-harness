@@ -11,10 +11,10 @@ import {
   userMessage,
   type ScriptedTurn,
 } from "@ephai/agent-core/testkit";
-import { createAgentOutcomeFn, defineTool } from "../../src/agents/tool/index.js";
+import { createAgentOutcomeFn, defineTool } from "../../src/tool/index.js";
 
-import { createAgentRuntime } from "../../src/agents/agent-runtime.js";
-import { buildLlmClientRegistry } from "../../src/agents/llm-client/registry.js";
+import { createAgentRuntime } from "../../src/agent-runtime.js";
+import { buildLlmClientRegistry } from "../../src/llm-client/registry.js";
 
 const noop = defineTool({
   name: "noop",

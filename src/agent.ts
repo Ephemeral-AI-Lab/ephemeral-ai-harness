@@ -1,4 +1,4 @@
-import type { UserMessage } from "../contracts/index.js";
+import type { UserMessage } from "./contracts/index.js";
 
 import type { AgentRunHandle } from "./agent-run.js";
 import type { LlmRef } from "./llm-client/registry.js";

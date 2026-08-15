@@ -9,7 +9,7 @@ import {
   type LlmClient,
   type ProviderConnection,
   type ReasoningEffort,
-} from "../../../src/agents/llm-client/index.js";
+} from "../../../src/llm-client/index.js";
 import { loadCodexAuthFromPath } from "./codex-auth.js";
 
 const ReasoningEffortSchema = z.enum([

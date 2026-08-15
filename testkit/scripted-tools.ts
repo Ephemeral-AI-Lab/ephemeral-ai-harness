@@ -4,7 +4,7 @@ import {
   type ToolCallContext,
   type ToolDefinition,
   type ToolResult,
-} from "../src/agents/tool/index.js";
+} from "../src/tool/index.js";
 
 /** A scripted definition: permissive JSON-object input. */
 export function scriptedTool(options: {

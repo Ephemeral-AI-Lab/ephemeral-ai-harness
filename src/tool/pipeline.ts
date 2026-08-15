@@ -3,7 +3,7 @@ import {
   type JsonObject,
   type ToolCallResult,
   type ToolSpec,
-} from "../../contracts/index.js";
+} from "../contracts/index.js";
 import type { BackgroundTaskSupervisor } from "../background/index.js";
 import type { ToolBatchContext, ToolUseBlock } from "../engine/index.js";
 import type { Notifier } from "../notification/index.js";

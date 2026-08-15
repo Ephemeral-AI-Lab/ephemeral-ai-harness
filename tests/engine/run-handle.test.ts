@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { BackgroundTaskSupervisor } from "../../src/agents/background/index.js";
+import type { BackgroundTaskSupervisor } from "../../src/background/index.js";
 
-import { RunHandle, type AgentEvent } from "../../src/agents/engine/run-handle.js";
+import { RunHandle, type AgentEvent } from "../../src/engine/run-handle.js";
 
 function handleFixture(): { handle: RunHandle; tapped: AgentEvent[] } {
   const tapped: AgentEvent[] = [];

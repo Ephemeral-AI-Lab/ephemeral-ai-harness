@@ -2,8 +2,8 @@ import { inspect } from "node:util";
 
 import { describe, expect, it } from "vitest";
 
-import { RetryConfigSchema, StreamGuardConfigSchema } from "../../src/agents/llm-client/config.js";
-import { SecretString } from "../../src/agents/llm-client/secret.js";
+import { RetryConfigSchema, StreamGuardConfigSchema } from "../../src/llm-client/config.js";
+import { SecretString } from "../../src/llm-client/secret.js";
 
 describe("secret string", () => {
   const secret = new SecretString("sk-super-secret");

@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { toolUseIdFrom } from "../../src/contracts/index.js";
 
-import type { RetryConfig } from "../../src/agents/llm-client/config.js";
-import { ProviderError } from "../../src/agents/llm-client/errors.js";
-import type { LlmStreamEvent } from "../../src/agents/llm-client/events.js";
-import { retryStream } from "../../src/agents/llm-client/retry.js";
+import type { RetryConfig } from "../../src/llm-client/config.js";
+import { ProviderError } from "../../src/llm-client/errors.js";
+import type { LlmStreamEvent } from "../../src/llm-client/events.js";
+import { retryStream } from "../../src/llm-client/retry.js";
 import { collect, collectUntilError } from "./support.js";
 
 const FAST: RetryConfig = {

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { z } from "zod";
 
-import { SecretString } from "../../../src/agents/llm-client/secret.js";
+import { SecretString } from "../../../src/llm-client/secret.js";
 
 /** The Codex CLI cache shape; only `tokens.access_token` is consumed. */
 const AuthFileSchema = z.object({

@@ -2,7 +2,7 @@ import {
   zodIssueSummary,
   type JsonObject,
   type ToolSpec,
-} from "../../contracts/index.js";
+} from "../contracts/index.js";
 import type { ToolBatchContext, ToolUseBlock } from "../engine/index.js";
 import { z } from "zod";
 

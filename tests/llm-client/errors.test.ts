@@ -12,7 +12,7 @@ import {
   ProviderError,
   toProviderError,
   type ProviderErrorKind,
-} from "../../src/agents/llm-client/errors.js";
+} from "../../src/llm-client/errors.js";
 
 describe("status mapping", () => {
   const cases: [number, ProviderErrorKind][] = [

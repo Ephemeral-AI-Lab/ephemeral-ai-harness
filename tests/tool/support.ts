@@ -4,11 +4,11 @@ import {
   type JsonObject,
   type Message,
 } from "../../src/contracts/index.js";
-import type { BackgroundTaskSupervisor } from "../../src/agents/background/index.js";
-import type { AgentEventBody, ToolBatchContext, ToolUseBlock } from "../../src/agents/engine/index.js";
+import type { BackgroundTaskSupervisor } from "../../src/background/index.js";
+import type { AgentEventBody, ToolBatchContext, ToolUseBlock } from "../../src/engine/index.js";
 
-import { HookEngine, type HookEntry } from "../../src/agents/tool/hooks.js";
-import type { RunScope } from "../../src/agents/tool/pipeline.js";
+import { HookEngine, type HookEntry } from "../../src/tool/hooks.js";
+import type { RunScope } from "../../src/tool/pipeline.js";
 
 export interface ScopeFixture {
   scope: RunScope;

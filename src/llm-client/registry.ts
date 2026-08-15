@@ -1,4 +1,4 @@
-import { DEFAULT_MAX_TOKENS } from "../../contracts/index.js";
+import { DEFAULT_MAX_TOKENS } from "../contracts/index.js";
 import {
   createLlmClient,
   type LlmClient,

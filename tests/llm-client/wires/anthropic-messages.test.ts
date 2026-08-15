@@ -2,17 +2,17 @@ import { describe, expect, it } from "vitest";
 
 import { toolUseIdFrom } from "../../../src/contracts/index.js";
 
-import { ProviderError } from "../../../src/agents/llm-client/errors.js";
-import { createLlmClient } from "../../../src/agents/llm-client/factory.js";
-import type { LlmClient } from "../../../src/agents/llm-client/client.js";
-import type { ProviderClientOptions } from "../../../src/agents/llm-client/config.js";
-import { SecretString } from "../../../src/agents/llm-client/secret.js";
-import { LlmStreamClient } from "../../../src/agents/llm-client/stream-client.js";
+import { ProviderError } from "../../../src/llm-client/errors.js";
+import { createLlmClient } from "../../../src/llm-client/factory.js";
+import type { LlmClient } from "../../../src/llm-client/client.js";
+import type { ProviderClientOptions } from "../../../src/llm-client/config.js";
+import { SecretString } from "../../../src/llm-client/secret.js";
+import { LlmStreamClient } from "../../../src/llm-client/stream-client.js";
 import {
   anthropicMessagesWire,
   encodeAnthropicRequest,
-} from "../../../src/agents/llm-client/wires/anthropic-messages.js";
-import { buildLlmRequest, type ReasoningEffort } from "../../../src/agents/llm-client/types.js";
+} from "../../../src/llm-client/wires/anthropic-messages.js";
+import { buildLlmRequest, type ReasoningEffort } from "../../../src/llm-client/types.js";
 import {
   collect,
   collectUntilError,

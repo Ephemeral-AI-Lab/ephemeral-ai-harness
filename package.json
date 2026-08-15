@@ -9,10 +9,6 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./agents": {
-      "types": "./src/agents/index.ts",
-      "default": "./src/agents/index.ts"
-    },
     "./testkit": {
       "types": "./testkit/index.ts",
       "default": "./testkit/index.ts"

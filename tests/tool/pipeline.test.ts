@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { defineTool } from "../../src/agents/tool/define.js";
-import { bindTool } from "../../src/agents/tool/pipeline.js";
-import type { ToolCallContext } from "../../src/agents/tool/contract.js";
+import { defineTool } from "../../src/tool/define.js";
+import { bindTool } from "../../src/tool/pipeline.js";
+import type { ToolCallContext } from "../../src/tool/contract.js";
 import { batchFixture, call, contentText, scopeFixture } from "./support.js";
 
 const echo = defineTool({

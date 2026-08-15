@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { defineTool } from "../../src/agents/tool/define.js";
+import { defineTool } from "../../src/tool/define.js";
 
 describe("defineTool", () => {
   it("returns a frozen definition with the trimmed name", () => {

@@ -1,4 +1,4 @@
-import type { JsonObject, ToolUseId, UserMessage } from "../../contracts/index.js";
+import type { JsonObject, ToolUseId, UserMessage } from "../contracts/index.js";
 import type {
   BackgroundTaskLifecycleEvent,
   BackgroundTaskSupervisor,

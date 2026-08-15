@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import {
   NotificationInbox,
   systemNotificationMessage,
-} from "../../src/agents/notification/inbox.js";
+} from "../../src/notification/inbox.js";
 
 describe("NotificationInbox", () => {
   it("drains pending messages in publish order, then is empty", () => {

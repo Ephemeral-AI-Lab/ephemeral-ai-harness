@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-import type { LlmStreamEvent } from "../../src/agents/llm-client/events.js";
+import type { LlmStreamEvent } from "../../src/llm-client/events.js";
 
 export function fixture(relativePath: string): string {
   return readFileSync(new URL(relativePath, import.meta.url), "utf8");

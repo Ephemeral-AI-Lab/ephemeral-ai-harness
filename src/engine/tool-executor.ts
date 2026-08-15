@@ -3,7 +3,7 @@ import type {
   Message,
   ToolCallResult,
   ToolSpec,
-} from "../../contracts/index.js";
+} from "../contracts/index.js";
 import type { AgentEventBody } from "./run-handle.js";
 
 /** A model-emitted `tool_use` block, the unit of batch dispatch. */
@@ -21,7 +21,7 @@ export interface ToolBatchContext {
 /**
  * The engine's ONE piece of tool knowledge - an injected port. Registry,
  * concurrency cap, terminal ordering, hooks, and the per-call pipeline all
- * live behind it (in `src/agents/tool`). The engine keeps only the invariant it
+ * live behind it (in `src/tool`). The engine keeps only the invariant it
  * cannot delegate: after `executeBatch` returns, any unanswered
  * `tool_use_id` is filled with a synthetic error result so provider-history
  * validity never depends on executor correctness.

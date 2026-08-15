@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { createAgentOutcomeFn, unwrapAgentOutcomeFn } from "../../src/agents/tool/outcome.js";
-import { bindTerminalTool, type TerminalGate } from "../../src/agents/tool/terminal.js";
+import { createAgentOutcomeFn, unwrapAgentOutcomeFn } from "../../src/tool/outcome.js";
+import { bindTerminalTool, type TerminalGate } from "../../src/tool/terminal.js";
 import { batchFixture, call, contentText, scopeFixture } from "./support.js";
 
 const SCHEMA = z.object({ summary: z.string().min(1) });

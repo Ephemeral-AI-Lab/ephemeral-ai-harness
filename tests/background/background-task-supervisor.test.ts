@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import type { Notifier } from "../../src/agents/notification/index.js";
+import type { Notifier } from "../../src/notification/index.js";
 
-import { RunBackgroundTaskSupervisor } from "../../src/agents/background/background-task-supervisor.js";
+import { RunBackgroundTaskSupervisor } from "../../src/background/background-task-supervisor.js";
 import type {
   BackgroundTask,
   BackgroundTaskCompletionContext,
   BackgroundTaskLifecycleEvent,
   BackgroundTaskOutcome,
   BackgroundTaskTag,
-} from "../../src/agents/background/background-task.js";
+} from "../../src/background/background-task.js";
 
 interface Fixture {
   supervisor: RunBackgroundTaskSupervisor;

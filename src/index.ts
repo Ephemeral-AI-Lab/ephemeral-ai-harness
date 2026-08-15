@@ -9,12 +9,12 @@ export {
   type AgentRuntime,
   type AgentRuntimeConfig,
   type AgentSpec,
-} from "./agents/index.js";
+} from "./agent-runtime.js";
 export type {
   LlmClientConfig,
   LlmClientProfile,
   LlmRef,
-} from "./agents/llm-client/registry.js";
+} from "./llm-client/registry.js";
 
 // ── agents & runs ───────────────────────────────────────────────
 export type {
@@ -23,7 +23,7 @@ export type {
   AgentRunError,
   AgentRunHandle,
   TurnFacts,
-} from "./agents/agent-run.js";
+} from "./agent-run.js";
 
 // ── run-scoped capabilities ─────────────────────────────────────
 export type {
@@ -33,8 +33,8 @@ export type {
   BackgroundTaskRow,
   BackgroundTaskSupervisor,
   BackgroundTaskTag,
-} from "./agents/background/index.js";
-export type { Notifier } from "./agents/notification/index.js";
+} from "./background/index.js";
+export type { Notifier } from "./notification/index.js";
 
 // ── authoring ───────────────────────────────────────────────────
 export {
@@ -51,7 +51,7 @@ export {
   type ToolDefinition,
   type ToolSpec,
   type ToolResult,
-} from "./agents/tool/index.js";
+} from "./tool/index.js";
 
 // ── exported types (no values, no schemas) ──────────────────────
 export type {
@@ -68,4 +68,4 @@ export type {
   ProviderConnection,
   ReasoningEffort,
   UsageSnapshot,
-} from "./agents/llm-client/index.js";
+} from "./llm-client/index.js";

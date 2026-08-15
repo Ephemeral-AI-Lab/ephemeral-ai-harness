@@ -1,4 +1,4 @@
-import type { JsonObject, JsonValue, Message, ToolUseId } from "../../contracts/index.js";
+import type { JsonObject, JsonValue, Message, ToolUseId } from "../contracts/index.js";
 import type { BackgroundTaskSupervisor } from "../background/index.js";
 import type { Notifier } from "../notification/index.js";
 import type { z } from "zod";

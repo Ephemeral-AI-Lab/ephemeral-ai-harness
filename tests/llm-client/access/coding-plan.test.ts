@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { apiKeyAccess } from "../../../src/agents/llm-client/access/api-key.js";
-import { claudeCodingPlanAccess } from "../../../src/agents/llm-client/access/claude-coding-plan.js";
+import { apiKeyAccess } from "../../../src/llm-client/access/api-key.js";
+import { claudeCodingPlanAccess } from "../../../src/llm-client/access/claude-coding-plan.js";
 import {
   codexAccessClaimsFromJwt,
   codexCodingPlanAccess,
-} from "../../../src/agents/llm-client/access/codex-coding-plan.js";
-import { ProviderError } from "../../../src/agents/llm-client/errors.js";
-import { SecretString } from "../../../src/agents/llm-client/secret.js";
+} from "../../../src/llm-client/access/codex-coding-plan.js";
+import { ProviderError } from "../../../src/llm-client/errors.js";
+import { SecretString } from "../../../src/llm-client/secret.js";
 
 /** Mirror of the Rust test helper: a jwt whose payload carries the auth claim. */
 function jwtWithAuthClaim(accountId: string | undefined, fedramp: boolean): string {

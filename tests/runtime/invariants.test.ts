@@ -16,12 +16,12 @@ import type { JsonObject } from "../../src/contracts/index.js";
 import type {
   BackgroundTaskCompletionContext,
   BackgroundTaskOutcome,
-} from "../../src/agents/background/index.js";
+} from "../../src/background/index.js";
 import { JsonObjectSchema } from "../../src/contracts/index.js";
-import { defineTool, createAgentOutcomeFn, type HookEntry } from "../../src/agents/tool/index.js";
-import type { AgentRunHandle } from "../../src/agents/engine/index.js";
+import { defineTool, createAgentOutcomeFn, type HookEntry } from "../../src/tool/index.js";
+import type { AgentRunHandle } from "../../src/engine/index.js";
 
-import { createAgentRuntime, type AgentRuntime, type AgentSpec } from "../../src/agents/agent-runtime.js";
+import { createAgentRuntime, type AgentRuntime, type AgentSpec } from "../../src/agent-runtime.js";
 
 // --- fixture ----------------------------------------------------------------
 

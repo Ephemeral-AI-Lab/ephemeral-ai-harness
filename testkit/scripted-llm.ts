@@ -12,7 +12,7 @@ import type {
   LlmStreamOptions,
   StopReason,
   UsageSnapshot,
-} from "../src/agents/llm-client/index.js";
+} from "../src/llm-client/index.js";
 
 /** One scripted provider turn; receives the request and the run's signal. */
 export type ScriptedTurn = (

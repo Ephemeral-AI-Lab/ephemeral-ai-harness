@@ -1,4 +1,4 @@
-import type { BackgroundTaskId } from "../../contracts/index.js";
+import type { BackgroundTaskId } from "../contracts/index.js";
 import type { Notifier } from "../notification/index.js";
 
 /** How one background task ended; `outcome` is the task's one-line result. */

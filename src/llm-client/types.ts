@@ -2,7 +2,7 @@ import {
   DEFAULT_MAX_TOKENS,
   type Message,
   type ToolSpec,
-} from "../../contracts/index.js";
+} from "../contracts/index.js";
 
 /** How the model should choose among the offered tools. */
 export type ToolChoice = "auto" | "any" | { tool: string };
