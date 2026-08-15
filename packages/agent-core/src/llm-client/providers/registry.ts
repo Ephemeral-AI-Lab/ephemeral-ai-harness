@@ -12,6 +12,7 @@ import { ProviderConnectionSchema, type ProviderConnection } from "./connection.
 import { anthropicProvider } from "./anthropic.js";
 import { openAiProvider } from "./openai.js";
 import type { Provider, ProviderOptions, ProviderTransport } from "./provider.js";
+import { catalogProvider } from "./runtime/provider.js";
 
 const CLAUDE_CODE_SYSTEM_PREFIX =
   "You are Claude Code, Anthropic's official CLI for Claude.";
@@ -44,6 +45,14 @@ export function createProvider(
   options: ProviderClientOptions = {},
 ): Provider {
   const parsed = ProviderConnectionSchema.parse(connection);
+  if (
+    parsed.provider !== "anthropic_api" &&
+    parsed.provider !== "openai_api" &&
+    parsed.provider !== "claude_coding_plan" &&
+    parsed.provider !== "codex_coding_plan"
+  ) {
+    return catalogProvider(parsed, options);
+  }
   switch (parsed.provider) {
     case "anthropic_api":
       return anthropicProvider(
