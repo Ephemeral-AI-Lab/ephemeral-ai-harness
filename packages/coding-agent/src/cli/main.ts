@@ -1,5 +1,5 @@
 import { bootstrap, type CodingAgent } from "../bootstrap.js";
 
-export async function main(configRoot?: string): Promise<CodingAgent> {
+export function main(configRoot?: string): CodingAgent {
   return bootstrap(configRoot);
 }

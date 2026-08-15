@@ -29,7 +29,7 @@ export interface CodingAgent {
  * Config parsing lives in the coding-agent package. The engine receives parsed
  * profiles and stores.
  */
-export async function bootstrap(configRoot: string = ephaiConfigRoot()): Promise<CodingAgent> {
+export function bootstrap(configRoot: string = ephaiConfigRoot()): CodingAgent {
   const cfg = loadCodingAgentConfig(configRoot);
 
   const agentRuntime = createAgentRuntime({

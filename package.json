@@ -1,42 +1,15 @@
 {
-  "name": "@ephai/agent-core",
-  "version": "0.0.0",
+  "name": "@ephai/agent-harness",
   "private": true,
-  "type": "module",
   "packageManager": "pnpm@10.23.0",
   "engines": {
     "node": ">=22.19.0"
   },
-  "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
-    },
-    "./testkit": {
-      "types": "./testkit/index.ts",
-      "default": "./testkit/index.ts"
-    }
-  },
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "test": "vitest run",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "check": "pnpm run typecheck && pnpm run lint && pnpm run test"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "0.104.1",
-    "@earendil-works/pi-ai": "0.82.1",
-    "openai": "6.42.0",
-    "zod": "^4.4.3"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^25.9.2",
-    "eslint": "^10.4.1",
-    "tsx": "^4.22.4",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.0",
-    "vitest": "^4.1.8"
+    "check": "pnpm -r run check",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "test:e2e": "pnpm --filter @ephai/agent-core run test:e2e"
   }
 }

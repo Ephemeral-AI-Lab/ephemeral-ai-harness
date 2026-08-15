@@ -2,7 +2,7 @@ import type { HookDecision, HookEntry } from "@ephai/agent-core";
 import type { AgentHookFactories } from "@ephai/agent-engine/agents";
 import { z } from "zod";
 
-import { requireAdvisoryPass } from "../../.ephai/hooks/advisor-hook.js";
+import { requireAdvisoryPass } from "./advisor-hook.js";
 import { executeJsonCommand } from "../scripts/execute-json-command.js";
 import { zodIssues } from "./diagnostics.js";
 import { loadEntriesFile, withDefaultCwd } from "./entries-file.js";
